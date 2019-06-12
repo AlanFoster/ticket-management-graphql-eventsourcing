@@ -1,11 +1,18 @@
-from typing import Optional
+from typing import Optional, List
 
 from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
 
+from application.ticket_list_projection_policy import TicketListProjectionPolicy
 from domain.ticket import Ticket
 
 
 class TicketsApplication(SQLAlchemyApplication):
+    persist_event_type = (Ticket.Event, Ticket.Created, Ticket.Discarded)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ticket_list_projection_policy = TicketListProjectionPolicy()
+
     def create_ticket(self) -> Ticket:
         ticket = Ticket.__create__()
         ticket.__save__()
@@ -26,6 +33,9 @@ class TicketsApplication(SQLAlchemyApplication):
         ticket = self.get_ticket(id)
         ticket.__discard__()
         ticket.__save__()
+
+    def get_tickets(self) -> List[Ticket]:
+        return self.ticket_list_projection_policy.get_tickets()
 
 
 _application: Optional["TicketsApplication"] = None
