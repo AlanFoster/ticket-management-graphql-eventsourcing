@@ -2,16 +2,37 @@ from typing import Optional
 
 from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
 
-
-class TicketApplication(SQLAlchemyApplication):
-    pass
+from domain.ticket import Ticket
 
 
-_application: Optional["TicketApplication"] = None
+class TicketsApplication(SQLAlchemyApplication):
+    def create_ticket(self) -> Ticket:
+        ticket = Ticket.__create__()
+        ticket.__save__()
+        return ticket
+
+    def get_ticket(self, id: str) -> Optional[Ticket]:
+        if id in self.repository:
+            return self.repository[id]
+        else:
+            return None
+
+    def rename_ticket(self, id: str, name: str) -> None:
+        ticket = self.get_ticket(id)
+        ticket.rename(name=name)
+        ticket.__save__()
+
+    def delete_ticket(self, id: str) -> None:
+        ticket = self.get_ticket(id)
+        ticket.__discard__()
+        ticket.__save__()
 
 
-def construct_application(**kwargs) -> TicketApplication:
-    return TicketApplication(**kwargs)
+_application: Optional["TicketsApplication"] = None
+
+
+def construct_application(**kwargs) -> TicketsApplication:
+    return TicketsApplication(**kwargs)
 
 
 def init_application(**kwargs) -> None:
@@ -25,7 +46,7 @@ def init_application(**kwargs) -> None:
     _application = construct_application(**kwargs)
 
 
-def get_application() -> TicketApplication:
+def get_application() -> TicketsApplication:
     """
     Returns single global instance of application.
     To be called when handling a worker request, if required.

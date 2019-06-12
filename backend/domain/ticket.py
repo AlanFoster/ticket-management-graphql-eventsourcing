@@ -19,7 +19,7 @@ class Ticket(AggregateRoot):
     def rename(self, name: str):
         self.__trigger_event__(Ticket.Renamed, name=name)
 
-    class Renamed(AggregateRoot.Event):
+    class Renamed(Event):
         @property
         def name(self):
             return self.__dict__["name"]
