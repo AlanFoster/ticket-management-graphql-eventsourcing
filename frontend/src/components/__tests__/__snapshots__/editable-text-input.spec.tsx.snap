@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditableText can be edited 1`] = `
+<div>
+  <div
+    class="MuiInputBase-root MuiInputBase-fullWidth Mui-focused"
+    required=""
+  >
+    <input
+      class="MuiInputBase-input makeStyles-text-2"
+      required=""
+      type="text"
+      value="new value"
+    />
+  </div>
+</div>
+`;
+
+exports[`EditableText shows the given initial value 1`] = `
+<div>
+  <div
+    class="makeStyles-text-1"
+  >
+    Initial value
+  </div>
+</div>
+`;

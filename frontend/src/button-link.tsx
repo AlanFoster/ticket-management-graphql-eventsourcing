@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { withRouter } from 'next/router';
 import NextLink from 'next/link';
 import MuiLink from '@material-ui/core/Link';
+import {Button} from "@material-ui/core";
 
 const NextComposed = React.forwardRef(function NextComposed(props, ref) {
     const { as, href, prefetch, ...other } = props;
@@ -35,7 +36,7 @@ function Link(props) {
         return <NextComposed className={className} ref={innerRef} {...other} />;
     }
 
-    return <MuiLink component={NextComposed} className={className} ref={innerRef} {...other} />;
+    return <Button component={NextComposed} className={className} ref={innerRef} {...other} />;
 }
 
 Link.propTypes = {
