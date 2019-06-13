@@ -6,9 +6,11 @@ verify_ssl = true
 [packages]
 eventsourcing = {extras = ["sqlalchemy"],version = "*"}
 pytest = "*"
+graphene = "==2.0"
 
 [requires]
 python_version = "3.7"
 
 [dev-packages]
 freezegun = "*"
+snapshottest = "*"

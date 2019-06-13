@@ -1,10 +1,12 @@
+from typing import Optional
+
 from eventsourcing.domain.model.aggregate import AggregateRoot
 
 
 class Ticket(AggregateRoot):
-    def __init__(self, **kwargs):
+    def __init__(self, name: Optional[str] = None, **kwargs):
         super(Ticket, self).__init__(**kwargs)
-        self.name = None
+        self.name = name
         self.description = None
 
     class Event(AggregateRoot.Event):

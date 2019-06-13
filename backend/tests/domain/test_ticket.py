@@ -8,13 +8,20 @@ def test_create_ticket():
     assert ticket.name is None
 
 
+def test_create_ticket_with_name():
+    ticket = Ticket.__create__(name="Immediately named")
+
+    assert ticket.id is not None
+    assert ticket.name == "Immediately named"
+
+
 def test_rename_ticket():
     ticket = Ticket.__create__()
 
     ticket.rename("New ticket name")
 
     assert ticket.id is not None
-    assert ticket.name is "New ticket name"
+    assert ticket.name == "New ticket name"
 
 
 def test_delete_ticket():

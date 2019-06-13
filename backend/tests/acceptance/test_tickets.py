@@ -1,10 +1,9 @@
-from decimal import Decimal
+from typing import Dict, List
 
 from freezegun import freeze_time
 
 from application.tickets import TicketsApplication
 from domain.ticket import Ticket
-from domain.tickets_projection import TicketListItem
 
 
 def Any(cls):
@@ -19,6 +18,14 @@ def Any(cls):
             return self.__repr__()
 
     return Any()
+
+
+def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
+    return {"id": str(ticket.id), "name": ticket.name}
+
+
+def tickets_as_dict(tickets: List[Ticket]) -> List[Dict[str, Any]]:
+    return list(map(ticket_as_dict, tickets))
 
 
 def test_create_ticket(ticket_app: TicketsApplication):
@@ -51,24 +58,25 @@ def test_get_tickets_when_none_created(ticket_app: TicketsApplication):
 
 def test_get_tickets_when_two_created(ticket_app: TicketsApplication):
     with freeze_time("2012-01-14"):
-        ticket_app.create_ticket()
+        ticket_app.create_ticket(name="first ticket")
     with freeze_time("2012-01-15"):
-        ticket_app.create_ticket()
-    assert ticket_app.get_tickets() == [
-        TicketListItem(ticket_id=Any(str), updated_at=Decimal("1326499200.000000")),
-        TicketListItem(ticket_id=Any(str), updated_at=Decimal("1326585600.000000")),
+        ticket_app.create_ticket(name="second ticket")
+
+    assert tickets_as_dict(ticket_app.get_tickets()) == [
+        {"id": Any(str), "name": "first ticket"},
+        {"id": Any(str), "name": "second ticket"},
     ]
 
 
 def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
     with freeze_time("2012-01-14"):
-        ticket = ticket_app.create_ticket()
+        ticket = ticket_app.create_ticket(name="original name")
         ticket_id = str(ticket.id)
     with freeze_time("2012-01-15"):
-        ticket_app.rename_ticket(ticket_id, "New ticket name")
+        ticket_app.rename_ticket(ticket_id, "new ticket name")
 
-    assert ticket_app.get_tickets() == [
-        TicketListItem(ticket_id=Any(str), updated_at=Decimal("1326585600.000000"))
+    assert tickets_as_dict(ticket_app.get_tickets()) == [
+        {"id": Any(str), "name": "new ticket name"}
     ]
 
 
