@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import graphene
 from typing import Iterable, Any, Optional
 
@@ -8,10 +10,11 @@ from application.tickets import TicketsApplication
 class Ticket(graphene.ObjectType):
     id = graphene.ID(required=True)
     name = graphene.String(required=False)
+    updated_at = graphene.types.datetime.DateTime(required=True)
 
     @classmethod
     def from_model(cls, model: domain.ticket.Ticket):
-        return cls(id=model.id, name=model.name)
+        return cls(id=model.id, name=model.name, updated_at=datetime.now())
 
 
 class Query(graphene.ObjectType):

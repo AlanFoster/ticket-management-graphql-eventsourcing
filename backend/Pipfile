@@ -6,7 +6,7 @@ verify_ssl = true
 [packages]
 eventsourcing = {extras = ["sqlalchemy"],version = "*"}
 pytest = "*"
-graphene = "==2.0"
+graphene = "==2.1"
 
 [requires]
 python_version = "3.7"

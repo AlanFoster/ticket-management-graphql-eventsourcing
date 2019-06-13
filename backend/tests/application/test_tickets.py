@@ -21,7 +21,11 @@ def Any(cls):
 
 
 def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
-    return {"id": str(ticket.id), "name": ticket.name}
+    return {
+        "id": str(ticket.id),
+        "name": ticket.name,
+        "updated_at": ticket.updated_at.isoformat(),
+    }
 
 
 def tickets_as_dict(tickets: List[Ticket]) -> List[Dict[str, Any]]:
@@ -63,8 +67,8 @@ def test_get_tickets_when_two_created(ticket_app: TicketsApplication):
         ticket_app.create_ticket(name="second ticket")
 
     assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {"id": Any(str), "name": "first ticket"},
-        {"id": Any(str), "name": "second ticket"},
+        {"id": Any(str), "name": "first ticket", "updated_at": "2012-01-14T00:00:00"},
+        {"id": Any(str), "name": "second ticket", "updated_at": "2012-01-15T00:00:00"},
     ]
 
 
@@ -76,7 +80,7 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
         ticket_app.rename_ticket(ticket_id, "new ticket name")
 
     assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {"id": Any(str), "name": "new ticket name"}
+        {"id": Any(str), "name": "new ticket name", "updated_at": "2012-01-15T00:00:00"}
     ]
 
 
