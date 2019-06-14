@@ -1,0 +1,11 @@
+*
+
+!lib
+!pages
+!src
+!static
+!jest.config.jest
+!jest.setup.js
+!next.config.js
+!package.json
+!yarn.lock

@@ -7,6 +7,11 @@ verify_ssl = true
 eventsourcing = {extras = ["sqlalchemy"],version = "*"}
 pytest = "*"
 graphene = "==2.1"
+flask-graphql = "*"
+flask-cors = "*"
+psycopg2-binary = "*"
+flask-migrate = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres:10.5-alpine
+    ports:
+      # The host machine may have postgres installed and running on port 5432, choosing arbitrary port 5510 instead.
+      - 5510:5432
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - 5000:5000
+    depends_on:
+      - database
+    entrypoint: dockerize -wait tcp://database:5432 -timeout 30s
+    command: flask run --host=0.0.0.0
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/srv/app
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    command: yarn dev
+    volumes:
+      - ./frontend/pages:/srv/frontend/pages
+      - ./frontend/src:/srv/frontend/src

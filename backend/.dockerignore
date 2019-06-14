@@ -1,0 +1,14 @@
+*
+
+!api
+!app
+!application
+!domain
+!infrastructure
+!migrations
+!tests
+!app.py
+!config.py
+!Pipfile
+!Pipfile.lock
+!pyproject.toml
