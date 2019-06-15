@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "schema:fetch": "graphql get-schema",
-    "codegen:watch": "apollo client:codegen --target=typescript --watch"
+    "codegen:watch": "apollo client:codegen --target=typescript --watch --addTypename"
   },
   "dependencies": {
     "@material-ui/core": "^4.1.0",

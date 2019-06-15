@@ -6,9 +6,11 @@ import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { EditableTextInput } from "../../src/components/editable-text-input";
 import gql from "graphql-tag";
-import { Query } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 import { DeleteTicket } from "../../src/components/tickets/delete-button";
 import * as GetTicketTypes from "./__generated__/getTicket";
+import * as RenameTicketTypes from "./__generated__/renameTicket";
+import * as UpdateTicketDescriptionTypes from "./__generated__/updateTicketDescription";
 import { Placeholder } from "../../src/components/placeholder";
 
 const useStyles = makeStyles(theme => ({
@@ -36,6 +38,22 @@ const GET_TICKET = gql`
     }
 `;
 
+const RENAME_TICKET = gql`
+    mutation renameTicket($id: ID!, $name: String!) {
+        renameTicket(id: $id, name: $name) {
+            ok
+        }
+    }
+`;
+
+const UPDATE_TICKET_DESCRIPTION = gql`
+    mutation updateTicketDescription($id: ID!, $description: String!) {
+        updateTicketDescription(id: $id, description: $description) {
+            ok
+        }
+    }
+`;
+
 export default function Show(props) {
     const classes = useStyles();
     const { id } = props.query;
@@ -55,27 +73,91 @@ export default function Show(props) {
                                 {loading ? (
                                     <Placeholder />
                                 ) : (
-                                    <EditableTextInput
-                                        key={data.ticket.name}
-                                        value={data.ticket.name}
-                                        onChange={name => {
-                                            /* noop */
-                                        }}
-                                    />
+                                    <Mutation<
+                                            RenameTicketTypes.renameTicket,
+                                            RenameTicketTypes.renameTicketVariables
+                                        >
+                                        mutation={RENAME_TICKET}
+                                    >
+                                        {(renameTicket, { loading, error }) => (
+                                            <EditableTextInput
+                                                key={data.ticket.name}
+                                                value={data.ticket.name}
+                                                disabled={loading}
+                                                onChange={name => {
+                                                    renameTicket({
+                                                        variables: {
+                                                            id: data.ticket.id,
+                                                            name: name
+                                                        },
+                                                        optimisticResponse: {
+                                                            renameTicket: {
+                                                                __typename: "RenameTicket",
+                                                                ok: true
+                                                            }
+                                                        },
+                                                        update: proxy => {
+                                                            proxy.writeQuery({
+                                                                query: GET_TICKET,
+                                                                data: {
+                                                                    ticket: {
+                                                                        ...data.ticket,
+                                                                        name: name
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }}
+                                            />
+                                        )}
+                                    </Mutation>
                                 )}
 
                                 {loading ? (
                                     <Placeholder />
                                 ) : (
-                                    <EditableTextInput
-                                        key={data.ticket.description}
-                                        value={data.ticket.description}
-                                        multiline
-                                        rows={4}
-                                        onChange={name => {
-                                            /* noop */
-                                        }}
-                                    />
+                                    <Mutation<
+                                            UpdateTicketDescriptionTypes.renameTicket,
+                                            UpdateTicketDescriptionTypes.renameTicketVariables
+                                        >
+                                        mutation={UPDATE_TICKET_DESCRIPTION}
+                                    >
+                                        {(updateTicketDescription, { loading, error }) => (
+                                            <EditableTextInput
+                                                key={data.ticket.description}
+                                                value={data.ticket.description}
+                                                multiline
+                                                rows={4}
+                                                disabled={loading}
+                                                onChange={description => {
+                                                    updateTicketDescription({
+                                                        variables: {
+                                                            id: data.ticket.id,
+                                                            description: description
+                                                        },
+                                                        optimisticResponse: {
+                                                            updateTicketDescription: {
+                                                                __typename: "UpdateTicketDescription",
+                                                                ok: true
+                                                            }
+                                                        },
+                                                        update: proxy => {
+                                                            proxy.writeQuery({
+                                                                query: GET_TICKET,
+                                                                data: {
+                                                                    ticket: {
+                                                                        ...data.ticket,
+                                                                        description: description
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }}
+                                            />
+                                        )}
+                                    </Mutation>
                                 )}
                             </CardContent>
                             <CardActions>
@@ -83,7 +165,10 @@ export default function Show(props) {
                                     <Button size="small" color="primary" disabled={loading}>
                                         View History
                                     </Button>
-                                    <DeleteTicket id={loading ? -1 : data.ticket.id} disabled={loading} />
+                                    <DeleteTicket
+                                        id={loading ? -1 : data.ticket.id}
+                                        disabled={loading}
+                                    />
                                 </CardActions>
                             </CardActions>
                         </Card>

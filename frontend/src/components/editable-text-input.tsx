@@ -44,7 +44,6 @@ export const EditableTextInput = function (props) {
         const hasValueChanged = value !== props.value;
         if (hasValueChanged) {
             props.onChange(value);
-            setEditing(false);
         } else {
             setEditing(false);
         }

@@ -66,7 +66,7 @@ const Tickets = function({
                 <Grid item key={ticket.id} xs={12} sm={6} md={4}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
-                            <Typography gutterBottom variant="h5" component="h2">
+                            <Typography noWrap gutterBottom variant="h5" component="h2">
                                 {ticket.name}
                             </Typography>
                             <Typography component="p">
