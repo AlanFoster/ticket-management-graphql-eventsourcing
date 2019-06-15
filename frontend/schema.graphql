@@ -1,5 +1,5 @@
 # source: http://localhost:5000/graphql
-# timestamp: Sat Jun 15 2019 02:01:52 GMT+0100 (British Summer Time)
+# timestamp: Sat Jun 15 2019 16:49:51 GMT+0100 (British Summer Time)
 
 type CreateTicket {
   ok: Boolean!
@@ -18,9 +18,10 @@ type DeleteTicket {
 }
 
 type Mutation {
-  createTicket(name: String!): CreateTicket
+  createTicket(name: String!, description: String!): CreateTicket
   renameTicket(id: ID!, name: String!): RenameTicket
   deleteTicket(id: ID!): DeleteTicket
+  updateTicketDescription(id: ID!, description: String!): UpdateTicketDescription
 }
 
 type Query {
@@ -35,5 +36,10 @@ type RenameTicket {
 type Ticket {
   id: ID!
   name: String
+  description: String
   updatedAt: DateTime!
+}
+
+type UpdateTicketDescription {
+  ok: Boolean!
 }

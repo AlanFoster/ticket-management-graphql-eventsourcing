@@ -8,11 +8,13 @@ import {GET_TICKETS} from "../../../pages/tickets/list";
 import NotificationsIcon from '@material-ui/icons/Add';
 
 const CREATE_TICKET = gql`
-    mutation createTicket($name: String!) {
-        createTicket(name: $name) {
+    mutation createTicket($name: String!, $description: String!) {
+        createTicket(name: $name, description: $description) {
             ok
             ticket {
                 id
+                name
+                updatedAt
             }
         }
     }
@@ -30,18 +32,21 @@ function routeToTicket(ticket) {
 interface State {
     isOpen: boolean;
     name: string;
+    description: string;
 }
 
 type Action =
     | { type: 'opened' }
     | { type: 'nameUpdated'; payload: string }
+    | { type: 'descriptionUpdated'; payload: string }
     | { type: 'completed' }
     | { type: 'closed' }
 
 function initialState(): State {
     return {
         isOpen: false,
-        name: 'Your ticket name'
+        name: 'Your ticket name',
+        description: 'Your ticket description'
     };
 }
 
@@ -51,6 +56,8 @@ function reducer(state: State, action: Action) {
             return { ...initialState(), isOpen: true };
         case 'nameUpdated':
             return { ...state, name: action.payload };
+        case 'descriptionUpdated':
+            return { ...state, description: action.payload };
         case 'completed':
             return { ...state, isOpen: false };
         case 'closed':
@@ -99,9 +106,8 @@ export const CreateTicketDialog = function (props) {
     return (
         <Mutation
             mutation={CREATE_TICKET}
-            variables={{ name: state.name }}
+            variables={{ name: state.name, description: state.description }}
             refetchQueries={[{ query: GET_TICKETS }]}
-            awaitRefetchQueries={true}
             onCompleted={(data) => {
                 dispatch({ type: 'completed' });
                 routeToTicket(data.createTicket.ticket);
@@ -130,6 +136,14 @@ export const CreateTicketDialog = function (props) {
                                 key={state.name}
                                 value={state.name}
                                 onChange={name => dispatch({ type: 'nameUpdated', payload: name })}
+                            />
+
+                            <EditableTextInput
+                                key={state.description}
+                                value={state.description}
+                                multiline
+                                rows={3}
+                                onChange={description => dispatch({ type: 'descriptionUpdated', payload: description })}
                             />
                         </DialogContent>
                         <DialogActions>

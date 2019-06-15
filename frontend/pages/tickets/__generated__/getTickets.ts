@@ -10,9 +10,10 @@ export interface getTickets_tickets {
   __typename: "Ticket";
   id: string;
   name: string | null;
+  description: string | null;
   updatedAt: any;
 }
 
 export interface getTickets {
-  tickets: getTickets_tickets[] | null;
+  tickets: getTickets_tickets[];
 }

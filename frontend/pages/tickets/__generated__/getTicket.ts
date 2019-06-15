@@ -10,6 +10,7 @@ export interface getTicket_ticket {
   __typename: "Ticket";
   id: string;
   name: string | null;
+  description: string | null;
   updatedAt: any;
 }
 

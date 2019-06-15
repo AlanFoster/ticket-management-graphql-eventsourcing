@@ -33,6 +33,7 @@ export const GET_TICKETS = gql`
         tickets {
             id
             name
+            description
             updatedAt
         }
     }
@@ -67,6 +68,9 @@ const Tickets = function({
                         <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h5" component="h2">
                                 {ticket.name}
+                            </Typography>
+                            <Typography component="p">
+                                {ticket.description}
                             </Typography>
                         </CardContent>
                         <CardActions>

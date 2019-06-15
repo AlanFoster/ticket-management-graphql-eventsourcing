@@ -4,7 +4,6 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import { EditableTextInput } from "../../src/components/editable-text-input";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
@@ -31,6 +30,7 @@ const GET_TICKET = gql`
         ticket(id: $id) {
             id
             name
+            description
             updatedAt
         }
     }
@@ -58,6 +58,20 @@ export default function Show(props) {
                                     <EditableTextInput
                                         key={data.ticket.name}
                                         value={data.ticket.name}
+                                        onChange={name => {
+                                            /* noop */
+                                        }}
+                                    />
+                                )}
+
+                                {loading ? (
+                                    <Placeholder />
+                                ) : (
+                                    <EditableTextInput
+                                        key={data.ticket.description}
+                                        value={data.ticket.description}
+                                        multiline
+                                        rows={4}
                                         onChange={name => {
                                             /* noop */
                                         }}

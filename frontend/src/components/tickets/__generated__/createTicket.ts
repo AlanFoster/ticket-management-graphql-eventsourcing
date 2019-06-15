@@ -9,6 +9,8 @@
 export interface createTicket_createTicket_ticket {
   __typename: "Ticket";
   id: string;
+  name: string | null;
+  updatedAt: any;
 }
 
 export interface createTicket_createTicket {
@@ -23,4 +25,5 @@ export interface createTicket {
 
 export interface createTicketVariables {
   name: string;
+  description: string;
 }
