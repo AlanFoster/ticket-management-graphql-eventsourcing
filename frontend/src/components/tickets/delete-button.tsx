@@ -20,7 +20,7 @@ function routeToTickets() {
     });
 }
 
-export const DeleteTicket = function ({ id }) {
+export const DeleteTicket = function ({ id, ...buttonProps }) {
     return (
         <Mutation<DeleteTicketTypes.deleteTicket_deleteTicket, DeleteTicketTypes.deleteTicketVariables>
             mutation={DELETE_TICKET}
@@ -33,9 +33,10 @@ export const DeleteTicket = function ({ id }) {
         >
             {(deleteTicket, { loading, error }) => (
                 <DeleteButton
+                    {...buttonProps}
                     size="small"
                     color="secondary"
-                    disabled={loading}
+                    disabled={loading || buttonProps.disabled}
                     onConfirm={deleteTicket}
                 />
             )}

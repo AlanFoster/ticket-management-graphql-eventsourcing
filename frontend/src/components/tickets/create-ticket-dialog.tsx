@@ -1,6 +1,6 @@
 import React, {useReducer} from 'react';
 import {EditableTextInput} from "../editable-text-input";
-import {Button, Dialog, DialogActions, DialogContent, IconButton, Toolbar} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, IconButton, makeStyles, Toolbar} from "@material-ui/core";
 import gql from "graphql-tag";
 import {Mutation} from "react-apollo";
 import Router from 'next/router';
@@ -60,7 +60,40 @@ function reducer(state: State, action: Action) {
     }
 }
 
-export const CreateTicketButton = function () {
+const useStyles = makeStyles(theme => ({
+    paper: {
+        padding: theme.spacing(3, 0, 0, 0),
+    },
+}));
+
+
+export const CreateTicketContained = function (props) {
+    return (
+        <Button
+            {...props}
+            size="large"
+            color="primary"
+            variant="contained"
+        >
+            Create ticket
+        </Button>
+    )
+};
+
+export const CreateTicketIcon = function (props) {
+    return (
+        <IconButton
+            {...props}
+            color="inherit"
+        >
+            <NotificationsIcon />
+        </IconButton>
+    )
+};
+
+export const CreateTicketDialog = function (props) {
+    const classes = useStyles();
+    const OpenButton = props.openButton || CreateTicketContained;
     const [state, dispatch] = useReducer(reducer, initialState());
 
     return (
@@ -76,20 +109,18 @@ export const CreateTicketButton = function () {
         >
             {(createTicket, { loading, error }) => (
                 <React.Fragment>
-                    <IconButton
+                    <OpenButton
                         onClick={() => {
                             dispatch({type: 'opened'})
                         }}
                         aria-label="Add ticket"
                         data-testid="add-ticket"
-                        color="inherit"
-                    >
-                        <NotificationsIcon />
-                    </IconButton>
+                    />
 
                     <Dialog
                         open={state.isOpen}
                         fullWidth={true}
+                        classes={classes}
                         onClose={() => {
                             dispatch({ type: 'closed' });
                         }}

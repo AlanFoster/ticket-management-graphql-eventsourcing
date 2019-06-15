@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Placeholder works with a count provided 1`] = `
+<div>
+  <div
+    class="makeStyles-root-4"
+  >
+    <span
+      class="makeStyles-element-6"
+    />
+    <span
+      class="makeStyles-element-6"
+    />
+    <span
+      class="makeStyles-element-6"
+    />
+  </div>
+</div>
+`;
+
+exports[`Placeholder works with no count provided 1`] = `
+<div>
+  <div
+    class="makeStyles-root-1"
+  >
+    <span
+      class="makeStyles-element-3"
+    />
+  </div>
+</div>
+`;

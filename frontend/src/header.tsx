@@ -1,6 +1,6 @@
 import * as React from "react";
 import { AppBar, makeStyles, Toolbar, Typography } from "@material-ui/core";
-import { CreateTicketButton } from "./components/tickets/create-button";
+import {CreateTicketDialog, CreateTicketIcon} from "./components/tickets/create-ticket-dialog";
 import { Link } from './links';
 
 const useStyles = makeStyles(theme => ({
@@ -28,7 +28,7 @@ export default function Header() {
                         Tickets
                     </Link>
                 </Typography>
-                <CreateTicketButton />
+                <CreateTicketDialog openButton={CreateTicketIcon} />
             </Toolbar>
         </AppBar>
     )
