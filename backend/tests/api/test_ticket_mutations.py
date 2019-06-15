@@ -8,23 +8,30 @@ def get_latest_ticket_as_dict(tickets_apps: TicketsApplication, ticket: Ticket):
     latest_ticket = tickets_apps.get_ticket(str(ticket.id))
     if latest_ticket is None:
         return None
-    return {"name": latest_ticket.name}
+    return {"name": latest_ticket.name, "description": latest_ticket.description}
 
 
 def test_create_ticket(snapshot, ticket_app: TicketsApplication):
     client = Client(schema, context={"ticket_app": ticket_app})
     create_ticket = """
-        mutation ($name: String!) {
-            createTicket(name: $name) {
+        mutation ($name: String!, $description: String!) {
+            createTicket(name: $name, description: $description) {
                 ok
                 ticket {
                     name
+                    description
                 }
             }
         }
     """
 
-    executed = client.execute(create_ticket, variables={"name": "testing ticket"})
+    executed = client.execute(
+        create_ticket,
+        variables={
+            "name": "testing ticket",
+            "description": "testing ticket description",
+        },
+    )
     assert executed["data"]["createTicket"]["ok"]
     snapshot.assert_match(executed)
 
@@ -45,6 +52,26 @@ def test_rename_ticket(snapshot, ticket_app: TicketsApplication):
     )
 
     assert executed["data"]["renameTicket"]["ok"]
+    snapshot.assert_match(get_latest_ticket_as_dict(ticket_app, ticket))
+
+
+def test_update_ticket_description(snapshot, ticket_app: TicketsApplication):
+    client = Client(schema, context={"ticket_app": ticket_app})
+    ticket = ticket_app.create_ticket(name="My ticket")
+
+    create_ticket = """
+        mutation ($id: ID!, $description: String!) {
+            updateTicketDescription(id: $id, description: $description) {
+                ok
+            }
+        }
+    """
+    executed = client.execute(
+        create_ticket,
+        variables={"id": str(ticket.id), "description": "updated description"},
+    )
+
+    assert executed["data"]["updateTicketDescription"]["ok"]
     snapshot.assert_match(get_latest_ticket_as_dict(ticket_app, ticket))
 
 

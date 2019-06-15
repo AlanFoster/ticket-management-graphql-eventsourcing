@@ -14,26 +14,29 @@ snapshots['test_get_tickets_when_none_created 1'] = {
     }
 }
 
-snapshots['test_get_ticket 1'] = {
-    'data': {
-        'ticket': {
-            'name': 'My ticket',
-            'updatedAt': '2012-01-14T00:00:00'
-        }
-    }
-}
-
 snapshots['test_get_tickets_when_multiple_created 1'] = {
     'data': {
         'tickets': [
             {
+                'description': None,
                 'name': 'My first ticket',
                 'updatedAt': '2012-01-14T00:00:00'
             },
             {
+                'description': None,
                 'name': 'My second ticket',
                 'updatedAt': '2012-01-14T00:00:00'
             }
         ]
+    }
+}
+
+snapshots['test_get_ticket 1'] = {
+    'data': {
+        'ticket': {
+            'description': 'My ticket description',
+            'name': 'My ticket',
+            'updatedAt': '2012-01-14T00:00:00'
+        }
     }
 }

@@ -13,8 +13,10 @@ class TicketsApplication(SQLAlchemyApplication):
         super().__init__(*args, **kwargs)
         self.ticket_list_projection_policy = TicketListProjectionPolicy()
 
-    def create_ticket(self, name: Optional[str] = None) -> Ticket:
-        ticket = Ticket.__create__(name=name)
+    def create_ticket(
+        self, name: Optional[str] = None, description: Optional[str] = None
+    ) -> Ticket:
+        ticket = Ticket.__create__(name=name, description=description)
         ticket.__save__()
         return ticket
 
@@ -27,6 +29,11 @@ class TicketsApplication(SQLAlchemyApplication):
     def rename_ticket(self, id: str, name: str) -> None:
         ticket = self.get_ticket(id)
         ticket.rename(name=name)
+        ticket.__save__()
+
+    def update_ticket_description(self, id: str, description: str) -> None:
+        ticket = self.get_ticket(id)
+        ticket.update_description(description=description)
         ticket.__save__()
 
     def delete_ticket(self, id: str) -> None:

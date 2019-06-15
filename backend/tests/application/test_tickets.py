@@ -24,6 +24,7 @@ def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
     return {
         "id": str(ticket.id),
         "name": ticket.name,
+        "description": ticket.description,
         "updated_at": ticket.updated_at.isoformat(),
     }
 
@@ -34,8 +35,12 @@ def tickets_as_dict(tickets: List[Ticket]) -> List[Dict[str, Any]]:
 
 def test_create_ticket(ticket_app: TicketsApplication):
     ticket = ticket_app.create_ticket()
-    assert ticket.id is not None
-    assert ticket.name is None
+    assert ticket_as_dict(ticket) == {
+        "id": Any(str),
+        "name": None,
+        "description": None,
+        "updated_at": Any(str),
+    }
 
 
 def test_rename_ticket(ticket_app: TicketsApplication):
@@ -44,8 +49,26 @@ def test_rename_ticket(ticket_app: TicketsApplication):
     ticket_app.rename_ticket(id=ticket_id, name="New ticket name")
 
     saved: Ticket = ticket_app.repository[ticket_id]
-    assert saved.id is not None
-    assert saved.name == "New ticket name"
+    assert ticket_as_dict(saved) == {
+        "id": Any(str),
+        "name": "New ticket name",
+        "description": None,
+        "updated_at": Any(str),
+    }
+
+
+def test_update_description_ticket(ticket_app: TicketsApplication):
+    ticket = ticket_app.create_ticket()
+    ticket_id = str(ticket.id)
+    ticket_app.update_ticket_description(id=ticket_id, description="New description")
+
+    saved: Ticket = ticket_app.repository[ticket_id]
+    assert ticket_as_dict(saved) == {
+        "id": Any(str),
+        "name": None,
+        "description": "New description",
+        "updated_at": Any(str),
+    }
 
 
 def test_delete_ticket(ticket_app: TicketsApplication):
@@ -67,8 +90,18 @@ def test_get_tickets_when_two_created(ticket_app: TicketsApplication):
         ticket_app.create_ticket(name="second ticket")
 
     assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {"id": Any(str), "name": "first ticket", "updated_at": "2012-01-14T00:00:00"},
-        {"id": Any(str), "name": "second ticket", "updated_at": "2012-01-15T00:00:00"},
+        {
+            "id": Any(str),
+            "name": "first ticket",
+            "description": None,
+            "updated_at": "2012-01-14T00:00:00",
+        },
+        {
+            "id": Any(str),
+            "name": "second ticket",
+            "description": None,
+            "updated_at": "2012-01-15T00:00:00",
+        },
     ]
 
 
@@ -78,9 +111,15 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
         ticket_id = str(ticket.id)
     with freeze_time("2012-01-15"):
         ticket_app.rename_ticket(ticket_id, "new ticket name")
+        ticket_app.update_ticket_description(ticket_id, "new ticket description")
 
     assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {"id": Any(str), "name": "new ticket name", "updated_at": "2012-01-15T00:00:00"}
+        {
+            "id": Any(str),
+            "name": "new ticket name",
+            "description": "new ticket description",
+            "updated_at": "2012-01-15T00:00:00",
+        }
     ]
 
 

@@ -6,12 +6,15 @@ from application.tickets import TicketsApplication
 
 @freeze_time("2012-01-14")
 def test_get_ticket(snapshot, ticket_app: TicketsApplication):
-    ticket = ticket_app.create_ticket(name="My ticket")
+    ticket = ticket_app.create_ticket(
+        name="My ticket", description="My ticket description"
+    )
     client = Client(schema, context={"ticket_app": ticket_app})
     get_ticket = """
         query ($id: ID!) {
             ticket(id: $id) {
                 name
+                description
                 updatedAt
             }
         }
@@ -28,6 +31,7 @@ def test_get_tickets_when_none_created(snapshot, ticket_app: TicketsApplication)
         query {
             tickets {
                 name
+                description
                 updatedAt
             }
         }
@@ -46,6 +50,7 @@ def test_get_tickets_when_multiple_created(snapshot, ticket_app: TicketsApplicat
         query {
             tickets {
                 name
+                description
                 updatedAt
             }
         }
