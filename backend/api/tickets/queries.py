@@ -7,7 +7,7 @@ from application.tickets import TicketsApplication
 
 class Query(graphene.ObjectType):
     ticket = graphene.Field(Ticket, id=graphene.ID(required=True))
-    tickets = graphene.List(graphene.NonNull(Ticket))
+    tickets = graphene.NonNull(graphene.List(graphene.NonNull(Ticket)))
 
     def resolve_tickets(self, info: graphene.ResolveInfo) -> Iterable[Ticket]:
         ticket_app: TicketsApplication = info.context.get("ticket_app")

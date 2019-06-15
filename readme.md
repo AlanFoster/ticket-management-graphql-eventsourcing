@@ -25,7 +25,10 @@ docker-compose exec backend flask db upgrade
 
 ## Backend Dev
 
-The development flow consists of running the docker containers with `docker-compose up` attaching to the backend process with:
+The development flow consists of running the docker containers with `docker-compose up`. Any changes to the `backend/` folder
+will cause a reload of flask.
+
+It is possible to start a new shell into the backend process with:
 
 ```
 docker-compose exec backend /bin/sh
@@ -50,4 +53,25 @@ To apply changes to your database:
 
 ```
 flask db upgrade
+```
+
+## Frontend Dev
+
+Running tests:
+
+```
+docker-compose exec frontend /bin/sh
+yarn test
+```
+
+Ensuring GraphQL types are generated:
+
+```
+yarn codegen:watch
+```
+
+Downloading the latest schema from the backend:
+
+```
+yarn schema:fetch
 ```

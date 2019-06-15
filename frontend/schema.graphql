@@ -1,0 +1,39 @@
+# source: http://localhost:5000/graphql
+# timestamp: Sat Jun 15 2019 02:01:52 GMT+0100 (British Summer Time)
+
+type CreateTicket {
+  ok: Boolean!
+  ticket: Ticket!
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+type DeleteTicket {
+  ok: Boolean!
+}
+
+type Mutation {
+  createTicket(name: String!): CreateTicket
+  renameTicket(id: ID!, name: String!): RenameTicket
+  deleteTicket(id: ID!): DeleteTicket
+}
+
+type Query {
+  ticket(id: ID!): Ticket
+  tickets: [Ticket!]!
+}
+
+type RenameTicket {
+  ok: Boolean!
+}
+
+type Ticket {
+  id: ID!
+  name: String
+  updatedAt: DateTime!
+}

@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "test": {
+      "schemaPath": "schema.graphql",
+      "extensions": {
+        "endpoints": {
+          "default": "http://localhost:5000/graphql"
+        }
+      }
+    }
+  }
+}

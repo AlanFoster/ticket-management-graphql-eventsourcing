@@ -4,15 +4,26 @@
     "test": "jest",
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "schema:fetch": "graphql get-schema",
+    "codegen:watch": "apollo client:codegen --target=typescript --watch"
   },
   "dependencies": {
     "@material-ui/core": "^4.1.0",
     "@material-ui/icons": "^4.1.0",
     "@material-ui/styles": "^4.1.0",
+    "@types/graphql": "^14.2.0",
+    "apollo": "^2.13.1",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.2",
+    "apollo-link-http": "^1.5.14",
     "clsx": "^1.0.4",
+    "graphql-cli": "^3.0.11",
+    "graphql-tag": "^2.10.1",
     "next": "^8.1.0",
+    "next-with-apollo": "^3.4.0",
     "react": "^16.8.6",
+    "react-apollo": "^2.5.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
