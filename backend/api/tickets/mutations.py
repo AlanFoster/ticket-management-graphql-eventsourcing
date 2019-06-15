@@ -33,6 +33,20 @@ class RenameTicket(graphene.Mutation):
         return cls(ok=True)
 
 
+class DeleteTicket(graphene.Mutation):
+    ok = graphene.Boolean(required=True)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    @classmethod
+    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str):
+        ticket_app: TicketsApplication = info.context.get("ticket_app")
+        ticket_app.delete_ticket(id)
+        return cls(ok=True)
+
+
 class Mutation(graphene.ObjectType):
     create_ticket = CreateTicket.Field()
     rename_ticket = RenameTicket.Field()
+    delete_ticket = DeleteTicket.Field()

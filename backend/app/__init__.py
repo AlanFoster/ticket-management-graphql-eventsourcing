@@ -31,9 +31,7 @@ def create_app(**config_overrides):
 
     @app.before_first_request
     def before_first_request():
-        init_application(
-            session=db.session
-        )
+        init_application(session=db.session)
 
     from api.schema import schema
 

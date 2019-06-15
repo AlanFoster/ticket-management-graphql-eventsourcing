@@ -7,6 +7,12 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
+snapshots['test_rename_ticket 1'] = {
+    'name': 'testing ticket'
+}
+
+snapshots['test_delete_ticket 1'] = None
+
 snapshots['test_create_ticket 1'] = {
     'data': {
         'createTicket': {
@@ -16,8 +22,4 @@ snapshots['test_create_ticket 1'] = {
             }
         }
     }
-}
-
-snapshots['test_rename_ticket 1'] = {
-    'name': 'My ticket'
 }
