@@ -9,6 +9,8 @@ def test_get_ticket(snapshot, ticket_app: TicketsApplication):
     ticket = ticket_app.create_ticket(
         name="My ticket", description="My ticket description"
     )
+    ticket_app.rename_ticket(str(ticket.id), "Ticket renamed")
+    ticket_app.update_ticket_description(str(ticket.id), "New ticket description")
     client = Client(schema, context={"ticket_app": ticket_app})
     get_ticket = """
         query ($id: ID!) {
@@ -16,6 +18,12 @@ def test_get_ticket(snapshot, ticket_app: TicketsApplication):
                 name
                 description
                 updatedAt
+                history {
+                    field
+                    oldValue
+                    newValue
+                    timestamp
+                }
             }
         }
     """

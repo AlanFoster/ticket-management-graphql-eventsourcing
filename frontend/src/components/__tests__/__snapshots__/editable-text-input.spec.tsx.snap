@@ -3,13 +3,16 @@
 exports[`EditableText can be edited 1`] = `
 <div>
   <div
-    class="makeStyles-root-35"
+    class="MuiInputBase-root makeStyles-root-35 MuiInputBase-fullWidth Mui-focused"
+    required=""
   >
-    <p
-      class="MuiTypography-root makeStyles-text-36 makeStyles-singleline-37 MuiTypography-body1"
-    >
-      Initial value
-    </p>
+    <input
+      class="MuiInputBase-input makeStyles-text-36 makeStyles-singleline-37"
+      required=""
+      rows="1"
+      type="text"
+      value="new value"
+    />
   </div>
 </div>
 `;

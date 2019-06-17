@@ -11,15 +11,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Header() {
     const classes = useStyles();
-    const [isModalOpen, setModalOpen] = React.useState(false);
-    const handleModalOpen = () => {
-        setModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setModalOpen(false);
-    };
-
     return (
         <AppBar position="relative">
             <Toolbar>

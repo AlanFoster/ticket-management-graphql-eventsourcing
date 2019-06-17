@@ -12,6 +12,7 @@ import * as GetTicketTypes from "./__generated__/getTicket";
 import * as RenameTicketTypes from "./__generated__/renameTicket";
 import * as UpdateTicketDescriptionTypes from "./__generated__/updateTicketDescription";
 import { Placeholder } from "../../src/components/placeholder";
+import {ViewHistoryButton} from "../../src/components/tickets/history";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -34,6 +35,12 @@ const GET_TICKET = gql`
             name
             description
             updatedAt
+            history {
+                field
+                oldValue
+                newValue
+                timestamp
+            }
         }
     }
 `;
@@ -78,6 +85,7 @@ export default function Show(props) {
                                             RenameTicketTypes.renameTicketVariables
                                         >
                                         mutation={RENAME_TICKET}
+                                        refetchQueries={[{ query: GET_TICKET, variables: { id: data.ticket.id} }]}
                                     >
                                         {(renameTicket, { loading, error }) => (
                                             <EditableTextInput
@@ -122,6 +130,7 @@ export default function Show(props) {
                                             UpdateTicketDescriptionTypes.renameTicketVariables
                                         >
                                         mutation={UPDATE_TICKET_DESCRIPTION}
+                                        refetchQueries={[{ query: GET_TICKET, variables: { id: data.ticket.id} }]}
                                     >
                                         {(updateTicketDescription, { loading, error }) => (
                                             <EditableTextInput
@@ -162,9 +171,10 @@ export default function Show(props) {
                             </CardContent>
                             <CardActions>
                                 <CardActions>
-                                    <Button size="small" color="primary" disabled={loading}>
-                                        View History
-                                    </Button>
+                                    <ViewHistoryButton
+                                        disabled={loading}
+                                        history={loading ? [] : data.ticket.history}
+                                    />
                                     <DeleteTicket
                                         id={loading ? -1 : data.ticket.id}
                                         disabled={loading}

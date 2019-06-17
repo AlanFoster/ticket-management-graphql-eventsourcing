@@ -6,12 +6,21 @@
 // GraphQL query operation: getTicket
 // ====================================================
 
+export interface getTicket_ticket_history {
+  __typename: "HistoryItem";
+  field: string;
+  oldValue: string | null;
+  newValue: string | null;
+  timestamp: any;
+}
+
 export interface getTicket_ticket {
   __typename: "Ticket";
   id: string;
   name: string | null;
   description: string | null;
   updatedAt: any;
+  history: getTicket_ticket_history[];
 }
 
 export interface getTicket {

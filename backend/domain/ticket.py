@@ -1,8 +1,17 @@
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from eventsourcing.domain.model.aggregate import AggregateRoot
 from eventsourcing.utils.times import datetime_from_timestamp
+
+
+@dataclass
+class HistoryItem:
+    field: str
+    old_value: str
+    new_value: str
+    timestamp: datetime
 
 
 class Ticket(AggregateRoot):
@@ -12,6 +21,7 @@ class Ticket(AggregateRoot):
         super(Ticket, self).__init__(**kwargs)
         self.name = name
         self.description = description
+        self.history: List[HistoryItem] = []
 
     class Event(AggregateRoot.Event):
         pass
@@ -38,6 +48,14 @@ class Ticket(AggregateRoot):
             return self.__dict__["name"]
 
         def mutate(self, ticket: "Ticket"):
+            ticket.history.append(
+                HistoryItem(
+                    field="name",
+                    old_value=ticket.name,
+                    new_value=self.name,
+                    timestamp=datetime_from_timestamp(self.timestamp),
+                )
+            )
             ticket.name = self.name
 
     class DescriptionUpdated(Event):
@@ -46,4 +64,13 @@ class Ticket(AggregateRoot):
             return self.__dict__["description"]
 
         def mutate(self, ticket: "Ticket"):
+            ticket.history.append(
+                HistoryItem(
+                    field="description",
+                    old_value=ticket.description,
+                    new_value=self.description,
+                    timestamp=datetime_from_timestamp(self.timestamp),
+                )
+            )
+
             ticket.description = self.description

@@ -4,6 +4,9 @@
 !pages
 !src
 !static
+!.babelrc
+!.graphqlconfig
+!apollo.config.js
 !jest.config.jest
 !jest.setup.js
 !next.config.js

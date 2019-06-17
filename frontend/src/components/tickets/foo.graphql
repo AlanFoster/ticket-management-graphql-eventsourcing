@@ -1,0 +1,10 @@
+mutation createTicket($name: String!, $description: String!) {
+    createTicket(name: $name, description: $description) {
+        ok
+        ticket {
+            id
+            name
+            updatedAt
+        }
+    }
+}
