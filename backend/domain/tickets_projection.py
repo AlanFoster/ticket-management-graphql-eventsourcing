@@ -13,6 +13,7 @@ class TicketListItem:
 class TicketListProjection:
     """
     Used to keep track of currently created tickets so that they could be shown on a user's dashboard for instance.
+    This projection is currently in memory, but should be persisted.
     """
 
     def __init__(self):
