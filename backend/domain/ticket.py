@@ -9,7 +9,7 @@ from eventsourcing.utils.times import datetime_from_timestamp
 @dataclass
 class HistoryItem:
     field: str
-    old_value: str
+    old_value: Optional[str]
     new_value: str
     timestamp: datetime
 

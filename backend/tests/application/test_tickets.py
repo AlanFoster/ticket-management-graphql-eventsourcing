@@ -1,13 +1,14 @@
+from datetime import datetime
 from typing import Dict, List
 
 from freezegun import freeze_time
 
 from application.tickets import TicketsApplication
-from domain.ticket import Ticket
+from domain.ticket import Ticket, HistoryItem
 
 
 def Any(cls):
-    class Any(cls):
+    class Any:
         def __eq__(self, other):
             return isinstance(other, cls)
 
@@ -26,6 +27,7 @@ def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
         "name": ticket.name,
         "description": ticket.description,
         "updated_at": ticket.updated_at.isoformat(),
+        "history": ticket.history,
     }
 
 
@@ -40,6 +42,7 @@ def test_create_ticket(ticket_app: TicketsApplication):
         "name": None,
         "description": None,
         "updated_at": Any(str),
+        "history": [],
     }
 
 
@@ -54,6 +57,14 @@ def test_rename_ticket(ticket_app: TicketsApplication):
         "name": "New ticket name",
         "description": None,
         "updated_at": Any(str),
+        "history": [
+            HistoryItem(
+                field="name",
+                old_value=None,
+                new_value="New ticket name",
+                timestamp=Any(datetime),
+            )
+        ],
     }
 
 
@@ -68,6 +79,14 @@ def test_update_description_ticket(ticket_app: TicketsApplication):
         "name": None,
         "description": "New description",
         "updated_at": Any(str),
+        "history": [
+            HistoryItem(
+                field="description",
+                old_value=None,
+                new_value="New description",
+                timestamp=Any(datetime),
+            )
+        ],
     }
 
 
@@ -95,12 +114,14 @@ def test_get_tickets_when_two_created(ticket_app: TicketsApplication):
             "name": "first ticket",
             "description": None,
             "updated_at": "2012-01-14T00:00:00",
+            "history": [],
         },
         {
             "id": Any(str),
             "name": "second ticket",
             "description": None,
             "updated_at": "2012-01-15T00:00:00",
+            "history": [],
         },
     ]
 
@@ -119,6 +140,20 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
             "name": "new ticket name",
             "description": "new ticket description",
             "updated_at": "2012-01-15T00:00:00",
+            "history": [
+                HistoryItem(
+                    field="name",
+                    old_value="original name",
+                    new_value="new ticket name",
+                    timestamp=datetime(year=2012, month=1, day=15),
+                ),
+                HistoryItem(
+                    field="description",
+                    old_value=None,
+                    new_value="new ticket description",
+                    timestamp=datetime(year=2012, month=1, day=15),
+                ),
+            ],
         }
     ]
 
