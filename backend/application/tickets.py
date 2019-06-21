@@ -20,11 +20,21 @@ class TicketsApplication(SQLAlchemyApplication):
         ticket.__save__()
         return ticket
 
-    def get_ticket(self, id: str) -> Optional[Ticket]:
+    def get_ticket(self, id: str, at: int = None) -> Optional[Ticket]:
         if id in self.repository:
-            return self.repository[id]
+            return self.repository.get_entity(id, at=at)
         else:
             return None
+
+    def clone_ticket(self, id: str) -> Ticket:
+        old_ticket = self.repository[id]
+        new_ticket: Ticket = Ticket.__create__()
+        new_ticket.clone(
+            original_ticket_id=str(old_ticket.id),
+            original_ticket_version=old_ticket.__version__,
+        )
+        new_ticket.__save__()
+        return new_ticket
 
     def rename_ticket(self, id: str, name: str) -> None:
         ticket = self.get_ticket(id)

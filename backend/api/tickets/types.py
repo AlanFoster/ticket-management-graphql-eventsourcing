@@ -14,6 +14,8 @@ class HistoryItem(graphene.Interface):
     def from_model(cls, model: domain.ticket.HistoryItem):
         if isinstance(model, domain.ticket.TicketFieldUpdated):
             return TicketFieldUpdated.from_model(model)
+        if isinstance(model, domain.ticket.TicketCloned):
+            return TicketCloned.from_model(model)
         else:
             raise TypeError(f"Invalid model of type {model.__class__}")
 
@@ -32,6 +34,23 @@ class TicketFieldUpdated(graphene.ObjectType):
             field=model.field,
             old_value=model.old_value,
             new_value=model.new_value,
+            timestamp=model.timestamp,
+        )
+
+
+class TicketCloned(graphene.ObjectType):
+    class Meta:
+        interfaces = (HistoryItem,)
+
+    field = graphene.String(required=True)
+    original_ticket_id = graphene.String(required=False)
+    original_ticket_name = graphene.String(required=False)
+
+    @classmethod
+    def from_model(cls, model: domain.ticket.TicketCloned):
+        return cls(
+            original_ticket_id=model.original_ticket_id,
+            original_ticket_name=model.original_ticket_name,
             timestamp=model.timestamp,
         )
 

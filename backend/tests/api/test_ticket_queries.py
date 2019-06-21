@@ -26,12 +26,56 @@ def test_get_ticket(snapshot, ticket_app: TicketsApplication):
                         oldValue
                         newValue
                     }
+                    ... on TicketCloned {
+                        originalTicketId
+                        originalTicketName
+                    }
                 }
             }
         }
     """
 
     executed = client.execute(get_ticket, variables={"id": str(ticket.id)})
+    snapshot.assert_match(executed)
+
+
+@freeze_time("2012-01-14")
+def test_get_cloned_ticket(snapshot, ticket_app: TicketsApplication):
+    original_ticket = ticket_app.create_ticket(
+        name="My ticket", description="My ticket description"
+    )
+    original_ticket_id = str(original_ticket.id)
+    ticket_app.rename_ticket(original_ticket_id, "Original ticket name")
+    ticket_app.update_ticket_description(
+        original_ticket_id, "Original ticket description"
+    )
+    new_ticket = ticket_app.clone_ticket(id=original_ticket_id)
+    new_ticket_id = str(new_ticket.id)
+    ticket_app.rename_ticket(id=new_ticket_id, name="New ticket name")
+
+    client = Client(schema, context={"ticket_app": ticket_app})
+    get_ticket = """
+        query ($id: ID!) {
+            ticket(id: $id) {
+                name
+                description
+                updatedAt
+                history {
+                    __typename
+                    ... on TicketFieldUpdated {
+                        field
+                        oldValue
+                        newValue
+                    }
+                    ... on TicketCloned {
+                        originalTicketName
+                    }
+                }
+            }
+        }
+    """
+
+    executed = client.execute(get_ticket, variables={"id": new_ticket_id})
     snapshot.assert_match(executed)
 
 

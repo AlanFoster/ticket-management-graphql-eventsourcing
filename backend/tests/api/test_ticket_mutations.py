@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from graphene.test import Client
 from api.schema import schema
 from application.tickets import TicketsApplication
@@ -90,3 +91,38 @@ def test_delete_ticket(snapshot, ticket_app: TicketsApplication):
 
     assert executed["data"]["deleteTicket"]["ok"]
     snapshot.assert_match(get_latest_ticket_as_dict(ticket_app, ticket))
+
+
+@freeze_time("2012-01-14")
+def test_clone_ticket(snapshot, ticket_app: TicketsApplication):
+    client = Client(schema, context={"ticket_app": ticket_app})
+    original_ticket = ticket_app.create_ticket(name="My ticket")
+    original_ticket_id = str(original_ticket.id)
+
+    delete_ticket = """
+        mutation ($id: ID!) {
+            cloneTicket(id: $id) {
+                ok
+                ticket {
+                    name
+                    description
+                    history {
+                        __typename
+                        timestamp
+                        ... on TicketFieldUpdated {
+                            field
+                            oldValue
+                            newValue
+                        }
+                        ... on TicketCloned {
+                            originalTicketName
+                        }
+                    }
+                }
+            }
+        }
+    """
+    executed = client.execute(delete_ticket, variables={"id": original_ticket_id})
+
+    assert executed["data"]["cloneTicket"]["ok"]
+    snapshot.assert_match(executed)

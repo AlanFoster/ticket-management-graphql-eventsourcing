@@ -24,6 +24,12 @@ class TicketFieldUpdated(HistoryItem):
     new_value: str
 
 
+@dataclass
+class TicketCloned(HistoryItem):
+    original_ticket_id: str
+    original_ticket_name: str
+
+
 class Ticket(AggregateRoot):
     def __init__(
         self, name: Optional[str] = None, description: Optional[str] = None, **kwargs
@@ -47,6 +53,13 @@ class Ticket(AggregateRoot):
 
     def update_description(self, description: str):
         self.__trigger_event__(Ticket.DescriptionUpdated, description=description)
+
+    def clone(self, original_ticket_id: str, original_ticket_version: int):
+        self.__trigger_event__(
+            Ticket.Cloned,
+            original_ticket_id=original_ticket_id,
+            original_ticket_version=original_ticket_version,
+        )
 
     @property
     def updated_at(self) -> datetime:
@@ -84,3 +97,31 @@ class Ticket(AggregateRoot):
             )
 
             ticket.description = self.description
+
+    class Cloned(Event):
+        @property
+        def original_ticket_id(self) -> str:
+            return self.__dict__["original_ticket_id"]
+
+        @property
+        def original_ticket_version(self) -> int:
+            return self.__dict__["original_ticket_version"]
+
+        def mutate(self, ticket: "Ticket"):
+            # TODO: Investigate if there's a way to dependency inject this rather than reaching for the global app
+            from application.tickets import get_application
+
+            tickets_app = get_application()
+            original_ticket = tickets_app.get_ticket(
+                id=self.original_ticket_id, at=self.original_ticket_version
+            )
+            ticket.name = f"CLONED - {original_ticket.name}"
+            ticket.description = original_ticket.description
+            # When cloning a ticket, we decide not to copy the previous history but instead start fresh
+            ticket.history = [
+                TicketCloned(
+                    original_ticket_id=self.original_ticket_id,
+                    original_ticket_name=original_ticket.name,
+                    timestamp=datetime_from_timestamp(self.timestamp),
+                )
+            ]

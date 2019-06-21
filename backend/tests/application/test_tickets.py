@@ -4,7 +4,7 @@ from typing import Dict, List, TypeVar, Generic, Callable, cast
 from freezegun import freeze_time
 
 from application.tickets import TicketsApplication
-from domain.ticket import Ticket, TicketFieldUpdated
+from domain.ticket import Ticket, TicketFieldUpdated, TicketCloned
 
 RequiredInstanceT = TypeVar("RequiredInstanceT")
 
@@ -98,6 +98,61 @@ def test_delete_ticket(ticket_app: TicketsApplication):
 
     ticket_app.delete_ticket(ticket_id)
     assert ticket_app.get_ticket(ticket_id) is None
+
+
+def test_clone_ticket(ticket_app: TicketsApplication):
+    original_ticket = ticket_app.create_ticket(
+        name="Original ticket name", description="Original ticket description"
+    )
+    original_ticket_id = str(original_ticket.id)
+
+    new_ticket = ticket_app.clone_ticket(id=original_ticket_id)
+    new_ticket_id = str(new_ticket.id)
+
+    assert original_ticket_id != new_ticket_id
+    assert ticket_as_dict(new_ticket) == {
+        "id": Any(str),
+        "name": "CLONED - Original ticket name",
+        "description": "Original ticket description",
+        "updated_at": Any(str),
+        "history": [
+            TicketCloned(
+                original_ticket_id=original_ticket_id,
+                original_ticket_name="Original ticket name",
+                timestamp=Any(datetime),
+            )
+        ],
+    }
+
+
+def test_clone_ticket_are_not_impacted_by_changes_to_the_original(
+    ticket_app: TicketsApplication
+):
+    original_ticket = ticket_app.create_ticket(
+        name="Original ticket name", description="Original ticket description"
+    )
+    original_ticket_id = str(original_ticket.id)
+
+    new_ticket = ticket_app.clone_ticket(id=original_ticket_id)
+    new_ticket_id = str(new_ticket.id)
+    ticket_app.rename_ticket(id=original_ticket_id, name="New ticket name")
+
+    new_ticket_reloaded = ticket_app.get_ticket(new_ticket_id)
+
+    assert original_ticket_id != str(new_ticket.id)
+    assert ticket_as_dict(new_ticket_reloaded) == {
+        "id": Any(str),
+        "name": "CLONED - Original ticket name",
+        "description": "Original ticket description",
+        "updated_at": Any(str),
+        "history": [
+            TicketCloned(
+                original_ticket_id=original_ticket_id,
+                original_ticket_name="Original ticket name",
+                timestamp=Any(datetime),
+            )
+        ],
+    }
 
 
 def test_get_tickets_when_none_created(ticket_app: TicketsApplication):

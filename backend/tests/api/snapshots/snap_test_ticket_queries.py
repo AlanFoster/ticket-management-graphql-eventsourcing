@@ -56,3 +56,25 @@ snapshots['test_get_ticket 1'] = {
         }
     }
 }
+
+snapshots['test_get_cloned_ticket 1'] = {
+    'data': {
+        'ticket': {
+            'description': 'Original ticket description',
+            'history': [
+                {
+                    '__typename': 'TicketCloned',
+                    'originalTicketName': 'Original ticket name'
+                },
+                {
+                    '__typename': 'TicketFieldUpdated',
+                    'field': 'name',
+                    'newValue': 'New ticket name',
+                    'oldValue': 'CLONED - Original ticket name'
+                }
+            ],
+            'name': 'New ticket name',
+            'updatedAt': '2012-01-14T00:00:00'
+        }
+    }
+}

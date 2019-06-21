@@ -30,3 +30,22 @@ snapshots['test_create_ticket 1'] = {
         }
     }
 }
+
+snapshots['test_clone_ticket 1'] = {
+    'data': {
+        'cloneTicket': {
+            'ok': True,
+            'ticket': {
+                'description': None,
+                'history': [
+                    {
+                        '__typename': 'TicketCloned',
+                        'originalTicketName': 'My ticket',
+                        'timestamp': '2012-01-14T00:00:00'
+                    }
+                ],
+                'name': 'CLONED - My ticket'
+            }
+        }
+    }
+}

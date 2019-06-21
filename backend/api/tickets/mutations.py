@@ -40,6 +40,20 @@ class RenameTicket(graphene.Mutation):
         return cls(ok=True)
 
 
+class CloneTicket(graphene.Mutation):
+    ok = graphene.Boolean(required=True)
+    ticket = graphene.Field(Ticket, required=True)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    @classmethod
+    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str):
+        ticket_app: TicketsApplication = info.context.get("ticket_app")
+        new_ticket = ticket_app.clone_ticket(id)
+        return cls(ok=True, ticket=Ticket.from_model(new_ticket))
+
+
 class UpdateTicketDescription(graphene.Mutation):
     ok = graphene.Boolean(required=True)
 
@@ -70,5 +84,6 @@ class DeleteTicket(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_ticket = CreateTicket.Field()
     rename_ticket = RenameTicket.Field()
+    clone_ticket = CloneTicket.Field()
     delete_ticket = DeleteTicket.Field()
     update_ticket_description = UpdateTicketDescription.Field()
