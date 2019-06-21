@@ -1,0 +1,7 @@
+# codegen.yml
+schema: schema.graphql
+overwrite: true
+generates:
+  ./__generated__/fragmentTypes.ts:
+    plugins:
+      - fragment-matcher

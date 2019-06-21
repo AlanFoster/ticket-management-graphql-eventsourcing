@@ -6,7 +6,7 @@ FROM node:12.4-alpine
 
 WORKDIR /srv/app
 
-COPY package.json yarn.lock ./
-RUN yarn && yarn cache clean
+COPY package.json package-lock.json ./
+RUN npm install && npm cache clean --force
 
 COPY . .

@@ -1,13 +1,15 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, TypeVar, Generic, Callable, cast
 
 from freezegun import freeze_time
 
 from application.tickets import TicketsApplication
-from domain.ticket import Ticket, HistoryItem
+from domain.ticket import Ticket, TicketFieldUpdated
+
+RequiredInstanceT = TypeVar("RequiredInstanceT")
 
 
-def Any(cls):
+def Any(cls: Generic[RequiredInstanceT]) -> Generic[RequiredInstanceT]:
     class Any:
         def __eq__(self, other):
             return isinstance(other, cls)
@@ -18,7 +20,7 @@ def Any(cls):
         def __str__(self):
             return self.__repr__()
 
-    return Any()
+    return cast(RequiredInstanceT, Any())
 
 
 def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
@@ -58,7 +60,7 @@ def test_rename_ticket(ticket_app: TicketsApplication):
         "description": None,
         "updated_at": Any(str),
         "history": [
-            HistoryItem(
+            TicketFieldUpdated(
                 field="name",
                 old_value=None,
                 new_value="New ticket name",
@@ -80,7 +82,7 @@ def test_update_description_ticket(ticket_app: TicketsApplication):
         "description": "New description",
         "updated_at": Any(str),
         "history": [
-            HistoryItem(
+            TicketFieldUpdated(
                 field="description",
                 old_value=None,
                 new_value="New description",
@@ -141,13 +143,13 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
             "description": "new ticket description",
             "updated_at": "2012-01-15T00:00:00",
             "history": [
-                HistoryItem(
+                TicketFieldUpdated(
                     field="name",
                     old_value="original name",
                     new_value="new ticket name",
                     timestamp=datetime(year=2012, month=1, day=15),
                 ),
-                HistoryItem(
+                TicketFieldUpdated(
                     field="description",
                     old_value=None,
                     new_value="new ticket description",

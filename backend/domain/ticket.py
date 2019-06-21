@@ -8,10 +8,20 @@ from eventsourcing.utils.times import datetime_from_timestamp
 
 @dataclass
 class HistoryItem:
+    """
+    The base value object representing important historical events that may be useful
+    to show to a user. All history items must have an appropriate timestamp. Additional
+    fields can be provided by the class that extends this value object.
+    """
+
+    timestamp: datetime
+
+
+@dataclass
+class TicketFieldUpdated(HistoryItem):
     field: str
     old_value: Optional[str]
     new_value: str
-    timestamp: datetime
 
 
 class Ticket(AggregateRoot):
@@ -49,7 +59,7 @@ class Ticket(AggregateRoot):
 
         def mutate(self, ticket: "Ticket"):
             ticket.history.append(
-                HistoryItem(
+                TicketFieldUpdated(
                     field="name",
                     old_value=ticket.name,
                     new_value=self.name,
@@ -65,7 +75,7 @@ class Ticket(AggregateRoot):
 
         def mutate(self, ticket: "Ticket"):
             ticket.history.append(
-                HistoryItem(
+                TicketFieldUpdated(
                     field="description",
                     old_value=ticket.description,
                     new_value=self.description,

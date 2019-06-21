@@ -36,10 +36,13 @@ const GET_TICKET = gql`
             description
             updatedAt
             history {
-                field
-                oldValue
-                newValue
+                __typename
                 timestamp
+                ... on TicketFieldUpdated {
+                    field
+                    oldValue
+                    newValue
+                }
             }
         }
     }

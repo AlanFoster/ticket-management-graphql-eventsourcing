@@ -19,10 +19,13 @@ def test_get_ticket(snapshot, ticket_app: TicketsApplication):
                 description
                 updatedAt
                 history {
-                    field
-                    oldValue
-                    newValue
+                    __typename
                     timestamp
+                    ... on TicketFieldUpdated {
+                        field
+                        oldValue
+                        newValue
+                    }
                 }
             }
         }

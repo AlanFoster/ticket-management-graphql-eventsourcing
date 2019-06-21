@@ -37,12 +37,14 @@ snapshots['test_get_ticket 1'] = {
             'description': 'New ticket description',
             'history': [
                 {
+                    '__typename': 'TicketFieldUpdated',
                     'field': 'name',
                     'newValue': 'Ticket renamed',
                     'oldValue': 'My ticket',
                     'timestamp': '2012-01-14T00:00:00'
                 },
                 {
+                    '__typename': 'TicketFieldUpdated',
                     'field': 'description',
                     'newValue': 'New ticket description',
                     'oldValue': 'My ticket description',

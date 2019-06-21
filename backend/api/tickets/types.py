@@ -2,14 +2,32 @@ import graphene
 import domain.ticket
 
 
-class HistoryItem(graphene.ObjectType):
-    field = graphene.String(required=True)
-    old_value = graphene.String(required=False)
-    new_value = graphene.String(required=False)
+class HistoryItem(graphene.Interface):
+    """
+    The abstract base history item type. All history items must have an appropriate timestamp.
+    Additional fields can be provided by the class that implements this interface.
+    """
+
     timestamp = graphene.types.datetime.DateTime(required=True)
 
     @classmethod
     def from_model(cls, model: domain.ticket.HistoryItem):
+        if isinstance(model, domain.ticket.TicketFieldUpdated):
+            return TicketFieldUpdated.from_model(model)
+        else:
+            raise TypeError(f"Invalid model of type {model.__class__}")
+
+
+class TicketFieldUpdated(graphene.ObjectType):
+    class Meta:
+        interfaces = (HistoryItem,)
+
+    field = graphene.String(required=True)
+    old_value = graphene.String(required=False)
+    new_value = graphene.String(required=False)
+
+    @classmethod
+    def from_model(cls, model: domain.ticket.TicketFieldUpdated):
         return cls(
             field=model.field,
             old_value=model.old_value,

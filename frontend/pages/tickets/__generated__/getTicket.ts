@@ -7,11 +7,11 @@
 // ====================================================
 
 export interface getTicket_ticket_history {
-  __typename: "HistoryItem";
+  __typename: "TicketFieldUpdated";
+  timestamp: any;
   field: string;
   oldValue: string | null;
   newValue: string | null;
-  timestamp: any;
 }
 
 export interface getTicket_ticket {

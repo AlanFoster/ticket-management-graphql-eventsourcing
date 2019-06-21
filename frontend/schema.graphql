@@ -1,5 +1,5 @@
 # source: http://localhost:5000/graphql
-# timestamp: Mon Jun 17 2019 10:21:35 GMT+0100 (British Summer Time)
+# timestamp: Thu Jun 20 2019 23:39:01 GMT+0100 (British Summer Time)
 
 type CreateTicket {
   ok: Boolean!
@@ -17,10 +17,11 @@ type DeleteTicket {
   ok: Boolean!
 }
 
-type HistoryItem {
-  field: String!
-  oldValue: String
-  newValue: String
+"""
+The abstract base history item type. All history items must have an appropriate timestamp.
+Additional fields can be provided by the class that implements this interface.
+"""
+interface HistoryItem {
   timestamp: DateTime!
 }
 
@@ -46,6 +47,13 @@ type Ticket {
   description: String
   updatedAt: DateTime!
   history: [HistoryItem!]!
+}
+
+type TicketFieldUpdated implements HistoryItem {
+  timestamp: DateTime!
+  field: String!
+  oldValue: String
+  newValue: String
 }
 
 type UpdateTicketDescription {

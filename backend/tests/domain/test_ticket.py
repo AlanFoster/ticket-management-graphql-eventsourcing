@@ -2,7 +2,7 @@ from datetime import datetime
 
 from freezegun import freeze_time
 
-from domain.ticket import Ticket, HistoryItem
+from domain.ticket import Ticket, TicketFieldUpdated
 
 
 @freeze_time("2012-01-14")
@@ -39,7 +39,7 @@ def test_rename_ticket():
     assert ticket.name == "New ticket name"
     assert ticket.description is None
     assert ticket.history == [
-        HistoryItem(
+        TicketFieldUpdated(
             field="name",
             old_value=None,
             new_value="New ticket name",
@@ -59,7 +59,7 @@ def test_update_description_ticket():
     assert ticket.name is None
     assert ticket.description == "New ticket description"
     assert ticket.history == [
-        HistoryItem(
+        TicketFieldUpdated(
             field="description",
             old_value=None,
             new_value="New ticket description",

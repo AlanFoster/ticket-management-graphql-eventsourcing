@@ -10,4 +10,6 @@ class Mutation(api.tickets.schema.Mutation, graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation, types=[])
+schema = graphene.Schema(
+    query=Query, mutation=Mutation, types=api.tickets.schema.schema.types
+)
