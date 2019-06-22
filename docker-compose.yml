@@ -30,5 +30,5 @@ services:
       - backend
     command: yarn dev
     volumes:
-      - ./frontend/pages:/srv/frontend/pages
-      - ./frontend/src:/srv/frontend/src
+      - ./frontend/pages:/srv/app/pages
+      - ./frontend/src:/srv/app/src

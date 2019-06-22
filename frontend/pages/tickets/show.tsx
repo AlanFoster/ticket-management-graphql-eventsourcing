@@ -1,6 +1,4 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,6 +11,8 @@ import * as RenameTicketTypes from "./__generated__/renameTicket";
 import * as UpdateTicketDescriptionTypes from "./__generated__/updateTicketDescription";
 import { Placeholder } from "../../src/components/placeholder";
 import {ViewHistoryButton} from "../../src/components/tickets/history";
+import {CloneTicket} from "../../src/components/tickets/clone-button";
+import {Card} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -42,6 +42,10 @@ const GET_TICKET = gql`
                     field
                     oldValue
                     newValue
+                }
+                ... on TicketCloned {
+                    originalTicketId
+                    originalTicketName
                 }
             }
         }
@@ -129,8 +133,8 @@ export default function Show(props) {
                                     <Placeholder />
                                 ) : (
                                     <Mutation<
-                                            UpdateTicketDescriptionTypes.renameTicket,
-                                            UpdateTicketDescriptionTypes.renameTicketVariables
+                                            UpdateTicketDescriptionTypes.updateTicketDescription,
+                                            UpdateTicketDescriptionTypes.updateTicketDescriptionVariables
                                         >
                                         mutation={UPDATE_TICKET_DESCRIPTION}
                                         refetchQueries={[{ query: GET_TICKET, variables: { id: data.ticket.id} }]}
@@ -174,7 +178,12 @@ export default function Show(props) {
                             </CardContent>
                             <CardActions>
                                 <CardActions>
+                                    <CloneTicket
+                                        disabled={loading}
+                                        id={loading ? -1 : data.ticket.id}
+                                    />
                                     <ViewHistoryButton
+                                        key={loading ? - 1 : data.ticket.id}
                                         disabled={loading}
                                         history={loading ? [] : data.ticket.history}
                                     />

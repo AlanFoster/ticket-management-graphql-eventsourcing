@@ -18,6 +18,9 @@ const result: IntrospectionResultData = {
         name: "HistoryItem",
         possibleTypes: [
           {
+            name: "TicketCloned"
+          },
+          {
             name: "TicketFieldUpdated"
           }
         ]
