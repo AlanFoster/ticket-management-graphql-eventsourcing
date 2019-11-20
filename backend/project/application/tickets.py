@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
+
 from project.application.ticket_list_projection_policy import \
     TicketListProjectionPolicy
 from project.domain.ticket import Ticket
@@ -38,16 +39,22 @@ class TicketsApplication(SQLAlchemyApplication):
 
     def rename_ticket(self, id: str, name: str) -> None:
         ticket = self.get_ticket(id)
+        assert ticket is not None
+
         ticket.rename(name=name)
         ticket.save()
 
     def update_ticket_description(self, id: str, description: str) -> None:
         ticket = self.get_ticket(id)
+        assert ticket is not None
+
         ticket.update_description(description=description)
         ticket.save()
 
     def delete_ticket(self, id: str) -> None:
         ticket = self.get_ticket(id)
+        assert ticket is not None
+
         ticket.discard()
         ticket.save()
 

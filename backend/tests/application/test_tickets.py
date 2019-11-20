@@ -1,50 +1,26 @@
 from datetime import datetime
-from typing import Dict, Generic, List, TypeVar, cast
+from typing import Any, Dict, List, Type, TypeVar, cast
 
 from freezegun import freeze_time
+
 from project.application.tickets import TicketsApplication
 from project.domain.ticket import Ticket, TicketCloned, TicketFieldUpdated
-
-RequiredInstanceT = TypeVar("RequiredInstanceT")
-
-
-def Any(cls: Generic[RequiredInstanceT]) -> Generic[RequiredInstanceT]:
-    class Any:
-        def __eq__(self, other):
-            return isinstance(other, cls)
-
-        def __repr__(self):
-            return f"[Any {cls.__name__}]"
-
-        def __str__(self):
-            return self.__repr__()
-
-    return cast(RequiredInstanceT, Any())
+from tests.helpers import AssertableTicket, any_instance_of
 
 
-def ticket_as_dict(ticket: Ticket) -> Dict[str, Any]:
-    return {
-        "id": str(ticket.id),
-        "name": ticket.name,
-        "description": ticket.description,
-        "updated_at": ticket.updated_at.isoformat(),
-        "history": ticket.history,
-    }
-
-
-def tickets_as_dict(tickets: List[Ticket]) -> List[Dict[str, Any]]:
-    return list(map(ticket_as_dict, tickets))
+def tickets_as_assertable_tickets(tickets: List[Ticket]) -> List[AssertableTicket]:
+    return list(map(AssertableTicket.from_model, tickets))
 
 
 def test_create_ticket(ticket_app: TicketsApplication):
     ticket = ticket_app.create_ticket()
-    assert ticket_as_dict(ticket) == {
-        "id": Any(str),
-        "name": None,
-        "description": None,
-        "updated_at": Any(str),
-        "history": [],
-    }
+    assert AssertableTicket.from_model(ticket) == AssertableTicket(
+        id=any_instance_of(str),
+        name=None,
+        description=None,
+        updated_at=any_instance_of(str),
+        history=[],
+    )
 
 
 def test_rename_ticket(ticket_app: TicketsApplication):
@@ -53,20 +29,20 @@ def test_rename_ticket(ticket_app: TicketsApplication):
     ticket_app.rename_ticket(id=ticket_id, name="New ticket name")
 
     saved = ticket_app.repository[ticket_id]
-    assert ticket_as_dict(saved) == {
-        "id": Any(str),
-        "name": "New ticket name",
-        "description": None,
-        "updated_at": Any(str),
-        "history": [
+    assert AssertableTicket.from_model(saved) == AssertableTicket(
+        id=any_instance_of(str),
+        name="New ticket name",
+        description=None,
+        updated_at=any_instance_of(str),
+        history=[
             TicketFieldUpdated(
                 field="name",
                 old_value=None,
                 new_value="New ticket name",
-                timestamp=Any(datetime),
+                timestamp=any_instance_of(datetime),
             )
         ],
-    }
+    )
 
 
 def test_update_description_ticket(ticket_app: TicketsApplication):
@@ -75,20 +51,20 @@ def test_update_description_ticket(ticket_app: TicketsApplication):
     ticket_app.update_ticket_description(id=ticket_id, description="New description")
 
     saved = ticket_app.repository[ticket_id]
-    assert ticket_as_dict(saved) == {
-        "id": Any(str),
-        "name": None,
-        "description": "New description",
-        "updated_at": Any(str),
-        "history": [
+    assert AssertableTicket.from_model(saved) == AssertableTicket(
+        id=any_instance_of(str),
+        name=None,
+        description="New description",
+        updated_at=any_instance_of(str),
+        history=[
             TicketFieldUpdated(
                 field="description",
                 old_value=None,
                 new_value="New description",
-                timestamp=Any(datetime),
+                timestamp=any_instance_of(datetime),
             )
         ],
-    }
+    )
 
 
 def test_delete_ticket(ticket_app: TicketsApplication):
@@ -109,19 +85,19 @@ def test_clone_ticket(ticket_app: TicketsApplication):
     new_ticket_id = str(new_ticket.id)
 
     assert original_ticket_id != new_ticket_id
-    assert ticket_as_dict(new_ticket) == {
-        "id": Any(str),
-        "name": "CLONED - Original ticket name",
-        "description": "Original ticket description",
-        "updated_at": Any(str),
-        "history": [
+    assert AssertableTicket.from_model(new_ticket) == AssertableTicket(
+        id=any_instance_of(str),
+        name="CLONED - Original ticket name",
+        description="Original ticket description",
+        updated_at=any_instance_of(str),
+        history=[
             TicketCloned(
                 original_ticket_id=original_ticket_id,
                 original_ticket_name="Original ticket name",
-                timestamp=Any(datetime),
+                timestamp=any_instance_of(datetime),
             )
         ],
-    }
+    )
 
 
 def test_clone_ticket_are_not_impacted_by_changes_to_the_original(
@@ -139,19 +115,19 @@ def test_clone_ticket_are_not_impacted_by_changes_to_the_original(
     new_ticket_reloaded = ticket_app.get_ticket(new_ticket_id)
 
     assert original_ticket_id != str(new_ticket.id)
-    assert ticket_as_dict(new_ticket_reloaded) == {
-        "id": Any(str),
-        "name": "CLONED - Original ticket name",
-        "description": "Original ticket description",
-        "updated_at": Any(str),
-        "history": [
+    assert AssertableTicket.from_model(new_ticket_reloaded) == AssertableTicket(
+        id=any_instance_of(str),
+        name="CLONED - Original ticket name",
+        description="Original ticket description",
+        updated_at=any_instance_of(str),
+        history=[
             TicketCloned(
                 original_ticket_id=original_ticket_id,
                 original_ticket_name="Original ticket name",
-                timestamp=Any(datetime),
+                timestamp=any_instance_of(datetime),
             )
         ],
-    }
+    )
 
 
 def test_get_tickets_when_none_created(ticket_app: TicketsApplication):
@@ -164,21 +140,21 @@ def test_get_tickets_when_two_created(ticket_app: TicketsApplication):
     with freeze_time("2012-01-15"):
         ticket_app.create_ticket(name="second ticket")
 
-    assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {
-            "id": Any(str),
-            "name": "first ticket",
-            "description": None,
-            "updated_at": "2012-01-14T00:00:00",
-            "history": [],
-        },
-        {
-            "id": Any(str),
-            "name": "second ticket",
-            "description": None,
-            "updated_at": "2012-01-15T00:00:00",
-            "history": [],
-        },
+    assert tickets_as_assertable_tickets(ticket_app.get_tickets()) == [
+        AssertableTicket(
+            id=any_instance_of(str),
+            name="first ticket",
+            description=None,
+            updated_at="2012-01-14T00:00:00",
+            history=[],
+        ),
+        AssertableTicket(
+            id=any_instance_of(str),
+            name="second ticket",
+            description=None,
+            updated_at="2012-01-15T00:00:00",
+            history=[],
+        ),
     ]
 
 
@@ -190,13 +166,13 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
         ticket_app.rename_ticket(ticket_id, "new ticket name")
         ticket_app.update_ticket_description(ticket_id, "new ticket description")
 
-    assert tickets_as_dict(ticket_app.get_tickets()) == [
-        {
-            "id": Any(str),
-            "name": "new ticket name",
-            "description": "new ticket description",
-            "updated_at": "2012-01-15T00:00:00",
-            "history": [
+    assert tickets_as_assertable_tickets(ticket_app.get_tickets()) == [
+        AssertableTicket(
+            id=any_instance_of(str),
+            name="new ticket name",
+            description="new ticket description",
+            updated_at="2012-01-15T00:00:00",
+            history=[
                 TicketFieldUpdated(
                     field="name",
                     old_value="original name",
@@ -210,7 +186,7 @@ def test_get_tickets_with_multiple_commands(ticket_app: TicketsApplication):
                     timestamp=datetime(year=2012, month=1, day=15),
                 ),
             ],
-        }
+        )
     ]
 
 

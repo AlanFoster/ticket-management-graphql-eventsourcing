@@ -27,7 +27,7 @@ class TicketFieldUpdated(HistoryItem):
 @dataclass
 class TicketCloned(HistoryItem):
     original_ticket_id: str
-    original_ticket_name: str
+    original_ticket_name: Optional[str]
 
 
 class Ticket(AggregateRoot):
@@ -51,7 +51,7 @@ class Ticket(AggregateRoot):
     @classmethod
     def create(
         cls, name: Optional[str] = None, description: Optional[str] = None, **kwargs
-    ) -> "Play":
+    ) -> "Ticket":
         return super().__create__(name=name, description=description, **kwargs)
 
     def save(self) -> None:
@@ -127,6 +127,7 @@ class Ticket(AggregateRoot):
             original_ticket = tickets_app.get_ticket(
                 id=self.original_ticket_id, at=self.original_ticket_version
             )
+            assert original_ticket is not None
             ticket.name = f"CLONED - {original_ticket.name}"
             ticket.description = original_ticket.description
             # When cloning a ticket, we decide not to copy the previous history but instead start fresh

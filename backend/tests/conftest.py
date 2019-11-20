@@ -4,6 +4,8 @@ from project.api.resolve_info import Context
 from project.application.tickets import (TicketsApplication, close_application,
                                          get_application, init_application)
 
+pytest.register_assert_rewrite("tests.helpers")
+
 
 @pytest.fixture(scope="function")
 def ticket_app():
