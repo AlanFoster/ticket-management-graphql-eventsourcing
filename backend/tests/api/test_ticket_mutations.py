@@ -1,7 +1,8 @@
 from freezegun import freeze_time
 from graphene.test import Client
-from project.api.schema import schema
+
 from project.api.resolve_info import Context
+from project.api.schema import schema
 from project.application.tickets import TicketsApplication
 from project.domain.ticket import Ticket
 from tests.api import raise_original_error
@@ -14,9 +15,7 @@ def get_latest_ticket_as_dict(tickets_apps: TicketsApplication, ticket: Ticket):
     return {"name": latest_ticket.name, "description": latest_ticket.description}
 
 
-def test_create_ticket(
-    snapshot, ticket_app: TicketsApplication, graphql_context: Context
-):
+def test_create_ticket(snapshot, graphql_context: Context):
     client = Client(schema, context=graphql_context, format_error=raise_original_error)
     create_ticket = """
         mutation ($name: String!, $description: String!) {

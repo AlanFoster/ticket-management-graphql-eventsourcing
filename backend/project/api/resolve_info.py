@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import graphene
+
 from project.application.tickets import TicketsApplication
 
 

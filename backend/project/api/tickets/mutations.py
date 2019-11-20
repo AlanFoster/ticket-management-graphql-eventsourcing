@@ -1,6 +1,7 @@
 from typing import Any, Optional
 
 import graphene
+
 from project.api.resolve_info import ResolveInfo
 from project.api.tickets.types import Ticket
 
@@ -21,7 +22,7 @@ class CreateTicket(graphene.Mutation):
         name: Optional[str] = None,
         description: Optional[str] = None,
     ):
-        ticket_app: TicketsApplication = info.context.ticket_app
+        ticket_app = info.context.ticket_app
         ticket = ticket_app.create_ticket(name=name, description=description)
         return cls(ok=True, ticket=Ticket.from_model(ticket))
 
@@ -35,7 +36,7 @@ class RenameTicket(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root: Any, info: ResolveInfo, id: str, name: str):
-        ticket_app: TicketsApplication = info.context.ticket_app
+        ticket_app = info.context.ticket_app
         ticket_app.rename_ticket(id, name=name)
         return cls(ok=True)
 
@@ -49,7 +50,7 @@ class CloneTicket(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root: Any, info: ResolveInfo, id: str):
-        ticket_app: TicketsApplication = info.context.ticket_app
+        ticket_app = info.context.ticket_app
         new_ticket = ticket_app.clone_ticket(id)
         return cls(ok=True, ticket=Ticket.from_model(new_ticket))
 
@@ -63,7 +64,7 @@ class UpdateTicketDescription(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root: Any, info: ResolveInfo, id: str, description: str):
-        ticket_app: TicketsApplication = info.context.ticket_app
+        ticket_app = info.context.ticket_app
         ticket_app.update_ticket_description(id, description)
         return cls(ok=True)
 
@@ -76,7 +77,7 @@ class DeleteTicket(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root: Any, info: ResolveInfo, id: str):
-        ticket_app: TicketsApplication = info.context.ticket_app
+        ticket_app = info.context.ticket_app
         ticket_app.delete_ticket(id)
         return cls(ok=True)
 
