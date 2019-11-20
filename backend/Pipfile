@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-eventsourcing = {extras = ["sqlalchemy"],version = "*"}
+eventsourcing = {editable = true,git = "https://github.com/johnbywater/eventsourcing",ref = "feature/better_type_annotations"}
 pytest = "*"
 graphene = "==2.1"
 flask-graphql = "*"
@@ -12,6 +12,7 @@ flask-cors = "*"
 psycopg2-binary = "*"
 flask-migrate = "*"
 sqlalchemy-utils = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.7"
