@@ -1,17 +1,19 @@
-from freezegun import freeze_time
-from graphene.test import Client
+from api.resolve_info import Context
 from api.schema import schema
 from application.tickets import TicketsApplication
+from freezegun import freeze_time
+from graphene.test import Client
+from tests.api import raise_original_error
 
 
 @freeze_time("2012-01-14")
-def test_get_ticket(snapshot, ticket_app: TicketsApplication):
+def test_get_ticket(snapshot, ticket_app: TicketsApplication, graphql_context: Context):
     ticket = ticket_app.create_ticket(
         name="My ticket", description="My ticket description"
     )
     ticket_app.rename_ticket(str(ticket.id), "Ticket renamed")
     ticket_app.update_ticket_description(str(ticket.id), "New ticket description")
-    client = Client(schema, context={"ticket_app": ticket_app})
+    client = Client(schema, context=graphql_context, format_error=raise_original_error)
     get_ticket = """
         query ($id: ID!) {
             ticket(id: $id) {
@@ -40,7 +42,9 @@ def test_get_ticket(snapshot, ticket_app: TicketsApplication):
 
 
 @freeze_time("2012-01-14")
-def test_get_cloned_ticket(snapshot, ticket_app: TicketsApplication):
+def test_get_cloned_ticket(
+    snapshot, ticket_app: TicketsApplication, graphql_context: Context
+):
     original_ticket = ticket_app.create_ticket(
         name="My ticket", description="My ticket description"
     )
@@ -53,7 +57,7 @@ def test_get_cloned_ticket(snapshot, ticket_app: TicketsApplication):
     new_ticket_id = str(new_ticket.id)
     ticket_app.rename_ticket(id=new_ticket_id, name="New ticket name")
 
-    client = Client(schema, context={"ticket_app": ticket_app})
+    client = Client(schema, context=graphql_context, format_error=raise_original_error)
     get_ticket = """
         query ($id: ID!) {
             ticket(id: $id) {
@@ -80,8 +84,10 @@ def test_get_cloned_ticket(snapshot, ticket_app: TicketsApplication):
 
 
 @freeze_time("2012-01-14")
-def test_get_tickets_when_none_created(snapshot, ticket_app: TicketsApplication):
-    client = Client(schema, context={"ticket_app": ticket_app})
+def test_get_tickets_when_none_created(
+    snapshot, ticket_app: TicketsApplication, graphql_context: Context
+):
+    client = Client(schema, context=graphql_context, format_error=raise_original_error)
     get_tickets = """
         query {
             tickets {
@@ -97,10 +103,12 @@ def test_get_tickets_when_none_created(snapshot, ticket_app: TicketsApplication)
 
 
 @freeze_time("2012-01-14")
-def test_get_tickets_when_multiple_created(snapshot, ticket_app: TicketsApplication):
+def test_get_tickets_when_multiple_created(
+    snapshot, ticket_app: TicketsApplication, graphql_context: Context
+):
     ticket_app.create_ticket(name="My first ticket")
     ticket_app.create_ticket(name="My second ticket")
-    client = Client(schema, context={"ticket_app": ticket_app})
+    client = Client(schema, context=graphql_context, format_error=raise_original_error)
     get_tickets = """
         query {
             tickets {

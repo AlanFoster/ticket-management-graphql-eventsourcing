@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Index, String, text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.sqltypes import BigInteger, Integer, Text, JSON
+from sqlalchemy.sql.sqltypes import JSON, BigInteger, Integer, Text
 from sqlalchemy_utils.types.uuid import UUIDType
+
 from app import db
 
 Base = declarative_base()

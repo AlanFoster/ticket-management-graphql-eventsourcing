@@ -29,8 +29,10 @@ docker-compose exec backend flask db upgrade
 
 The following endpoints should now be available on your host machine:
 
-- Backend - http://localhost:5000/graphql
+- Backend - http://localhost:5511/graphql
 - Frontend - http://localhost:3000/
+
+Postgres will be available on the host machine on port 5510.
 
 ## Backend Dev
 

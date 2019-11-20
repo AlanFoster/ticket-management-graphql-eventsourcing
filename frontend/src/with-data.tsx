@@ -14,7 +14,7 @@ export const createApolloClient = function () {
         fragmentMatcher
     });
     const link = new HttpLink({
-        uri: 'http://localhost:5000/graphql'
+        uri: 'http://localhost:5511/graphql'
     });
 
     return new ApolloClient({

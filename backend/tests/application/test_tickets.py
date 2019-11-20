@@ -1,10 +1,9 @@
 from datetime import datetime
-from typing import Dict, List, TypeVar, Generic, Callable, cast
-
-from freezegun import freeze_time
+from typing import Callable, Dict, Generic, List, TypeVar, cast
 
 from application.tickets import TicketsApplication
-from domain.ticket import Ticket, TicketFieldUpdated, TicketCloned
+from domain.ticket import Ticket, TicketCloned, TicketFieldUpdated
+from freezegun import freeze_time
 
 RequiredInstanceT = TypeVar("RequiredInstanceT")
 

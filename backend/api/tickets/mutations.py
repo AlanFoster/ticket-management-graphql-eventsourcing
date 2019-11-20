@@ -1,6 +1,7 @@
-import graphene
 from typing import Any, Optional
 
+import graphene
+from api.resolve_info import ResolveInfo
 from api.tickets.types import Ticket
 from application.tickets import TicketsApplication
 
@@ -17,11 +18,11 @@ class CreateTicket(graphene.Mutation):
     def mutate(
         cls,
         root: Any,
-        info: graphene.ResolveInfo,
+        info: ResolveInfo,
         name: Optional[str] = None,
         description: Optional[str] = None,
     ):
-        ticket_app: TicketsApplication = info.context.get("ticket_app")
+        ticket_app: TicketsApplication = info.context.ticket_app
         ticket = ticket_app.create_ticket(name=name, description=description)
         return cls(ok=True, ticket=Ticket.from_model(ticket))
 
@@ -34,8 +35,8 @@ class RenameTicket(graphene.Mutation):
         name = graphene.String(required=True)
 
     @classmethod
-    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str, name: str):
-        ticket_app: TicketsApplication = info.context.get("ticket_app")
+    def mutate(cls, root: Any, info: ResolveInfo, id: str, name: str):
+        ticket_app: TicketsApplication = info.context.ticket_app
         ticket_app.rename_ticket(id, name=name)
         return cls(ok=True)
 
@@ -48,8 +49,8 @@ class CloneTicket(graphene.Mutation):
         id = graphene.ID(required=True)
 
     @classmethod
-    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str):
-        ticket_app: TicketsApplication = info.context.get("ticket_app")
+    def mutate(cls, root: Any, info: ResolveInfo, id: str):
+        ticket_app: TicketsApplication = info.context.ticket_app
         new_ticket = ticket_app.clone_ticket(id)
         return cls(ok=True, ticket=Ticket.from_model(new_ticket))
 
@@ -62,8 +63,8 @@ class UpdateTicketDescription(graphene.Mutation):
         description = graphene.String(required=True)
 
     @classmethod
-    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str, description: str):
-        ticket_app: TicketsApplication = info.context.get("ticket_app")
+    def mutate(cls, root: Any, info: ResolveInfo, id: str, description: str):
+        ticket_app: TicketsApplication = info.context.ticket_app
         ticket_app.update_ticket_description(id, description)
         return cls(ok=True)
 
@@ -75,8 +76,8 @@ class DeleteTicket(graphene.Mutation):
         id = graphene.ID(required=True)
 
     @classmethod
-    def mutate(cls, root: Any, info: graphene.ResolveInfo, id: str):
-        ticket_app: TicketsApplication = info.context.get("ticket_app")
+    def mutate(cls, root: Any, info: ResolveInfo, id: str):
+        ticket_app: TicketsApplication = info.context.ticket_app
         ticket_app.delete_ticket(id)
         return cls(ok=True)
 

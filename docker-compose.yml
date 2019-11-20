@@ -4,14 +4,15 @@ services:
   database:
     image: postgres:10.5-alpine
     ports:
-      # The host machine may have postgres installed and running on port 5432, choosing arbitrary port 5510 instead.
+      # The host machine may have postgres installed and running on port 5432, choosing an arbitrary port instead.
       - 5510:5432
 
   backend:
     build:
       context: ./backend
     ports:
-      - 5000:5000
+      # The default port for flask is most likely taken, choosing an arbitrary port instead.
+      - 5511:5000
     depends_on:
       - database
     entrypoint: dockerize -wait tcp://database:5432 -timeout 30s

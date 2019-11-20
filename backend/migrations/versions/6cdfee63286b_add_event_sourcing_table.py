@@ -5,10 +5,11 @@ Revises:
 Create Date: 2019-06-14 14:09:51.720373
 
 """
-import sqlalchemy_utils
-from alembic import op
 import sqlalchemy as sa
+import sqlalchemy_utils
 from sqlalchemy.sql.sqltypes import BigInteger, Integer
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "6cdfee63286b"

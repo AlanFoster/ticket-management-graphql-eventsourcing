@@ -5,7 +5,7 @@ module.exports = {
         ],
         service: {
             name: 'backend',
-            url: 'http://localhost:5000/graphql'
+            url: 'http://localhost:5511/graphql'
         },
     },
 };

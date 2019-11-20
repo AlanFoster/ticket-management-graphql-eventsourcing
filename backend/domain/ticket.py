@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
 from eventsourcing.domain.model.aggregate import AggregateRoot
 from eventsourcing.utils.times import datetime_from_timestamp
@@ -47,6 +47,18 @@ class Ticket(AggregateRoot):
 
     class Discarded(AggregateRoot.Discarded):
         pass
+
+    @classmethod
+    def create(
+        cls, name: Optional[str] = None, description: Optional[str] = None, **kwargs
+    ) -> "Play":
+        return super().__create__(name=name, description=description, **kwargs)
+
+    def save(self) -> None:
+        self.__save__()
+
+    def discard(self) -> None:
+        self.__discard__()
 
     def rename(self, name: str):
         self.__trigger_event__(Ticket.Renamed, name=name)

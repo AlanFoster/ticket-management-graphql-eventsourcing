@@ -1,22 +1,24 @@
 import os
 
 from flask import Flask
-from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+
+from flask_cors import CORS
 from flask_graphql import GraphQLView
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 
 
-def create_app(**config_overrides):
+def create_app(config_overrides=None):
     # create and configure the app
     app = Flask(__name__)
     db.init_app(app)
     CORS(app)
 
     app.config.from_pyfile("config.py")
-    app.config.update(config_overrides)
+    if config_overrides:
+        app.config.update(config_overrides)
 
     migrate = Migrate(app, db)
 
@@ -34,6 +36,7 @@ def create_app(**config_overrides):
         init_application(session=db.session)
 
     from api.schema import schema
+    from api.resolve_info import Context
 
     app.add_url_rule("/health", view_func=lambda: "OK")
     app.add_url_rule(
@@ -42,7 +45,7 @@ def create_app(**config_overrides):
             "graphql",
             schema=schema,
             graphiql=app.debug,
-            get_context=lambda: {"ticket_app": get_application()},
+            get_context=lambda: Context(ticket_app=get_application()),
         ),
     )
 

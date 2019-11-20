@@ -1,5 +1,5 @@
-import graphene
 import api.tickets.schema
+import graphene
 
 
 class Query(api.tickets.schema.Query, graphene.ObjectType):

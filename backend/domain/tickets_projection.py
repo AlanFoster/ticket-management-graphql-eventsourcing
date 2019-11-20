@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import List, Dict
+from typing import Dict, List
 
 
 @dataclass

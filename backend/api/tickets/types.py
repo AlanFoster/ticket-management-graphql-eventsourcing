@@ -1,5 +1,5 @@
-import graphene
 import domain.ticket
+import graphene
 
 
 class HistoryItem(graphene.Interface):
