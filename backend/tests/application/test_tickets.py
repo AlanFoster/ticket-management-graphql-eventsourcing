@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Callable, Dict, Generic, List, TypeVar, cast
+from typing import Dict, Generic, List, TypeVar, cast
 
-from application.tickets import TicketsApplication
-from domain.ticket import Ticket, TicketCloned, TicketFieldUpdated
 from freezegun import freeze_time
+from project.application.tickets import TicketsApplication
+from project.domain.ticket import Ticket, TicketCloned, TicketFieldUpdated
 
 RequiredInstanceT = TypeVar("RequiredInstanceT")
 
@@ -52,7 +52,7 @@ def test_rename_ticket(ticket_app: TicketsApplication):
     ticket_id = str(ticket.id)
     ticket_app.rename_ticket(id=ticket_id, name="New ticket name")
 
-    saved: Ticket = ticket_app.repository[ticket_id]
+    saved = ticket_app.repository[ticket_id]
     assert ticket_as_dict(saved) == {
         "id": Any(str),
         "name": "New ticket name",
@@ -74,7 +74,7 @@ def test_update_description_ticket(ticket_app: TicketsApplication):
     ticket_id = str(ticket.id)
     ticket_app.update_ticket_description(id=ticket_id, description="New description")
 
-    saved: Ticket = ticket_app.repository[ticket_id]
+    saved = ticket_app.repository[ticket_id]
     assert ticket_as_dict(saved) == {
         "id": Any(str),
         "name": None,

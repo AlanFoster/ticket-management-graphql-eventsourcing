@@ -4,8 +4,8 @@ import os
 import pytest
 from flask.testing import FlaskClient
 
-from app import create_app
-from application.tickets import close_application
+from project.app import create_app
+from project.application.tickets import close_application
 
 
 @pytest.fixture(scope="function")

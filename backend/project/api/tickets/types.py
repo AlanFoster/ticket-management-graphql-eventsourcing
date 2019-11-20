@@ -1,5 +1,5 @@
-import domain.ticket
 import graphene
+import project.domain.ticket
 
 
 class HistoryItem(graphene.Interface):
@@ -11,10 +11,10 @@ class HistoryItem(graphene.Interface):
     timestamp = graphene.types.datetime.DateTime(required=True)
 
     @classmethod
-    def from_model(cls, model: domain.ticket.HistoryItem):
-        if isinstance(model, domain.ticket.TicketFieldUpdated):
+    def from_model(cls, model: project.domain.ticket.HistoryItem):
+        if isinstance(model, project.domain.ticket.TicketFieldUpdated):
             return TicketFieldUpdated.from_model(model)
-        if isinstance(model, domain.ticket.TicketCloned):
+        if isinstance(model, project.domain.ticket.TicketCloned):
             return TicketCloned.from_model(model)
         else:
             raise TypeError(f"Invalid model of type {model.__class__}")
@@ -29,7 +29,7 @@ class TicketFieldUpdated(graphene.ObjectType):
     new_value = graphene.String(required=False)
 
     @classmethod
-    def from_model(cls, model: domain.ticket.TicketFieldUpdated):
+    def from_model(cls, model: project.domain.ticket.TicketFieldUpdated):
         return cls(
             field=model.field,
             old_value=model.old_value,
@@ -47,7 +47,7 @@ class TicketCloned(graphene.ObjectType):
     original_ticket_name = graphene.String(required=False)
 
     @classmethod
-    def from_model(cls, model: domain.ticket.TicketCloned):
+    def from_model(cls, model: project.domain.ticket.TicketCloned):
         return cls(
             original_ticket_id=model.original_ticket_id,
             original_ticket_name=model.original_ticket_name,
@@ -63,7 +63,7 @@ class Ticket(graphene.ObjectType):
     history = graphene.NonNull(graphene.List(graphene.NonNull(HistoryItem)))
 
     @classmethod
-    def from_model(cls, model: domain.ticket.Ticket):
+    def from_model(cls, model: project.domain.ticket.Ticket):
         return cls(
             id=model.id,
             name=model.name,

@@ -1,9 +1,8 @@
 from typing import Any, Optional
 
 import graphene
-from api.resolve_info import ResolveInfo
-from api.tickets.types import Ticket
-from application.tickets import TicketsApplication
+from project.api.resolve_info import ResolveInfo
+from project.api.tickets.types import Ticket
 
 
 class CreateTicket(graphene.Mutation):

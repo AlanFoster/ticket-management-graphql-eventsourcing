@@ -1,6 +1,7 @@
-from domain.ticket import Ticket
-from domain.tickets_projection import TicketListItem, TicketListProjection
 from eventsourcing.domain.model.events import subscribe, unsubscribe
+from project.domain.ticket import Ticket
+from project.domain.tickets_projection import (TicketListItem,
+                                               TicketListProjection)
 
 
 class TicketListProjectionPolicy(object):

@@ -121,7 +121,7 @@ class Ticket(AggregateRoot):
 
         def mutate(self, ticket: "Ticket"):
             # TODO: Investigate if there's a way to dependency inject this rather than reaching for the global app
-            from application.tickets import get_application
+            from project.application.tickets import get_application
 
             tickets_app = get_application()
             original_ticket = tickets_app.get_ticket(

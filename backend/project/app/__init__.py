@@ -28,15 +28,14 @@ def create_app(config_overrides=None):
     except OSError:
         pass
 
-    from application.tickets import init_application, get_application
-    from infrastructure import records
+    from project.application.tickets import init_application, get_application
 
     @app.before_first_request
     def before_first_request():
         init_application(session=db.session)
 
-    from api.schema import schema
-    from api.resolve_info import Context
+    from project.api.schema import schema
+    from project.api.resolve_info import Context
 
     app.add_url_rule("/health", view_func=lambda: "OK")
     app.add_url_rule(

@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from domain.ticket import Ticket, TicketFieldUpdated
 from freezegun import freeze_time
+from project.domain.ticket import Ticket, TicketFieldUpdated
 
 
 @freeze_time("2012-01-14")
 def test_create_ticket():
-    ticket: Ticket = Ticket.create()
+    ticket = Ticket.create()
 
     assert ticket.id is not None
     assert ticket.name is None
@@ -17,7 +17,7 @@ def test_create_ticket():
 
 @freeze_time("2012-01-14")
 def test_create_ticket_with_provided_values():
-    ticket: Ticket = Ticket.create(
+    ticket = Ticket.create(
         name="Immediately named", description="Immediately described"
     )
 
@@ -30,7 +30,7 @@ def test_create_ticket_with_provided_values():
 
 @freeze_time("2012-01-14")
 def test_rename_ticket():
-    ticket: Ticket = Ticket.create()
+    ticket = Ticket.create()
 
     ticket.rename("New ticket name")
 
@@ -50,7 +50,7 @@ def test_rename_ticket():
 
 @freeze_time("2012-01-14")
 def test_update_description_ticket():
-    ticket: Ticket = Ticket.create()
+    ticket = Ticket.create()
 
     ticket.update_description("New ticket description")
 
@@ -70,7 +70,7 @@ def test_update_description_ticket():
 
 @freeze_time("2012-01-14")
 def test_delete_ticket():
-    ticket: Ticket = Ticket.create()
+    ticket = Ticket.create()
     ticket.__discard__()
 
     assert ticket.id is not None

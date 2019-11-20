@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import graphene
-from application.tickets import TicketsApplication
+from project.application.tickets import TicketsApplication
 
 
 @dataclass

@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from application.ticket_list_projection_policy import \
-    TicketListProjectionPolicy
-from domain.ticket import Ticket
 from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
+from project.application.ticket_list_projection_policy import \
+    TicketListProjectionPolicy
+from project.domain.ticket import Ticket
 
 
 class TicketsApplication(SQLAlchemyApplication):

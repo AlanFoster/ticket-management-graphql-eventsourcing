@@ -1,14 +1,8 @@
 *
 
-!api
-!app
-!application
-!domain
-!infrastructure
 !migrations
+!project
 !tests
-!app.py
-!config.py
 !Pipfile
 !Pipfile.lock
 !pyproject.toml

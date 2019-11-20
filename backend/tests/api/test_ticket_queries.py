@@ -1,8 +1,8 @@
-from api.resolve_info import Context
-from api.schema import schema
-from application.tickets import TicketsApplication
 from freezegun import freeze_time
 from graphene.test import Client
+from project.api.schema import schema
+from project.api.resolve_info import Context
+from project.application.tickets import TicketsApplication
 from tests.api import raise_original_error
 
 

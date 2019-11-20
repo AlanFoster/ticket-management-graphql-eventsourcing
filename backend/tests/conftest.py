@@ -1,8 +1,8 @@
 import pytest
 
-from api.resolve_info import Context
-from application.tickets import (TicketsApplication, close_application,
-                                 get_application, init_application)
+from project.api.resolve_info import Context
+from project.application.tickets import (TicketsApplication, close_application,
+                                         get_application, init_application)
 
 
 @pytest.fixture(scope="function")
