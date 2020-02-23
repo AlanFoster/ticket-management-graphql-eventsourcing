@@ -1,0 +1,21 @@
+def get_ticket(events: List[Event]) -> Ticket:
+  ticket = None
+
+  for event in events:
+    if event.type == 'Ticket.Created':
+      ticket = Ticket(
+        id=event.id,
+        name=event.id,
+        description=event.description,
+        created_at=event.timestamp,
+        deleted_at=None
+      )
+    elif event.type == 'Ticket.Updated':
+      if event.name:
+          ticket.name = ticket.name
+      if event.description:
+          ticket.description = ticket.description
+    elif event.type == 'Ticket.Deleted':
+        ticket.deleted_at = event.timestamp
+
+  return ticket
